@@ -165,6 +165,8 @@ def enable_all_db_triggers(cursor: Cursor):
 
 
 def db_rewind(cursor: Cursor):
+    disable_all_db_triggers(cursor)
+
     history_events = cursor.execute(
         """
             SELECT 
@@ -180,9 +182,20 @@ def db_rewind(cursor: Cursor):
     history_events = cursor.fetchall()
 
     for it in history_events:
-        if it[1] == "UPDATE":
-            update_from_json(cursor, it[0], it[3])
-            break
+        table_name = it[0]
+        operation = it[1]
+        new_val = it[2]
+        old_val = it[3]
+
+        match operation:
+            case "UPDATE":
+                update_from_json(cursor, table_name, old_val)
+            case "INSERT":
+                delete_from_json(cursor, table_name, new_val)
+            case "DELETE":
+                insert_from_json(cursor, table_name, old_val)
+
+    enable_all_db_triggers(cursor)
 
 
 def update_from_json(cursor: Cursor, table_name: str, json_value: dict):
@@ -197,7 +210,7 @@ def update_from_json(cursor: Cursor, table_name: str, json_value: dict):
     )
 
     where_clause = sql.SQL("{} = %s").format(
-        sql.Identifier(condition_column), condition_column
+        sql.Identifier(condition_column)
     )
 
     update_query = sql.SQL("UPDATE {} SET {} WHERE {}").format(
@@ -211,6 +224,52 @@ def update_from_json(cursor: Cursor, table_name: str, json_value: dict):
     print(update_query.as_string(cursor))
 
     cursor.execute(update_query, update_data)
+
+
+def delete_from_json(cursor: Cursor, table_name: str, json_value: dict):
+    condition_column = 'id'
+    condition_value = json_value['id']
+
+    where_clause = sql.SQL("{} = %s").format(
+        sql.Identifier(condition_column), condition_column
+    )
+
+    delete_query = sql.SQL("DELETE FROM {} where {}").format(
+        sql.Identifier(table_name),
+        where_clause
+    )
+
+    print(delete_query.as_string(cursor))
+
+    cursor.execute(delete_query, [condition_value])
+
+
+def insert_from_json(cursor: Cursor, table_name: str, json_value: dict):
+    columns = sql.SQL(", ").join(
+        [
+            sql.Identifier(column)
+            for column in json_value.keys()
+        ]
+    )
+
+    values_place_holder = sql.SQL(", ").join(
+        [
+            sql.SQL("%s")
+            for _ in range(0, len(json_value.keys()))
+        ]
+    )
+
+    insert_statement = sql.SQL("INSERT INTO {} ({}) VALUES ({})").format(
+        sql.Identifier(table_name),
+        columns,
+        values_place_holder
+    )
+
+    insert_data = [it if type(it) != dict else json.dumps(it) for it in json_value.values()]
+
+    print(insert_statement.as_string(cursor))
+
+    cursor.execute(insert_statement, insert_data)
 
 
 database_name = "homestead"
@@ -245,7 +304,7 @@ db_rewind(cursor)
 # rows = cursor.fetchall()
 # print(rows)
 
-connection.commit()
+# connection.commit()
 
 cursor.close()
 connection.close()
