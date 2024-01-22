@@ -20,11 +20,11 @@ class CursorResponse:
 
 
 def construct_database_uri(
-    database_name: str,
-    username: str = "postgres",
-    password: str = "postgres",
-    host: str = "127.0.0.1",
-    port: str = "5432",
+        database_name: str,
+        username: str = "postgres",
+        password: str = "postgres",
+        host: str = "127.0.0.1",
+        port: str = "5432",
 ) -> str:
     return f"postgresql://{username}:{password}@{host}:{port}/{database_name}"
 
@@ -195,18 +195,18 @@ def update_from_json(cursor: Cursor, table_name: str, json_value: dict):
             for column in json_value.keys()
         ]
     )
-    
-    # where_clause = sql.SQL("{} = %({})s").format(
-    #     sql.Identifier(condition_column), condition_column
-    # )
 
-    update_query = sql.SQL("UPDATE {} SET {} WHERE id = '69'").format(
-        sql.Identifier(table_name), 
-        set_clause
-        # sql.Identifier(condition_value)
+    where_clause = sql.SQL("{} = %s").format(
+        sql.Identifier(condition_column), condition_column
     )
-    
-    update_data = tuple(json_value.values())
+
+    update_query = sql.SQL("UPDATE {} SET {} WHERE {}").format(
+        sql.Identifier(table_name),
+        set_clause,
+        where_clause
+    )
+
+    update_data = [it if type(it) != dict else json.dumps(it) for it in json_value.values()] + [condition_value]
 
     print(update_query.as_string(cursor))
 
@@ -218,7 +218,6 @@ database_user = "postgres"
 database_password = "9Y2LEH8kMj"
 database_host = "127.0.0.1"
 database_port = "54320"
-
 
 database_uri = construct_database_uri(
     database_name=database_name,
