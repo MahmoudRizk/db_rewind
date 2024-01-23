@@ -203,7 +203,7 @@ def db_rewind(cursor: Cursor):
 
         match operation:
             case "UPDATE":
-                update_from_json(cursor, table_name, old_val,json_columns)
+                update_from_json(cursor, table_name, old_val, json_columns)
             case "INSERT":
                 delete_from_json(cursor, table_name, new_val)
             case "DELETE":
@@ -297,39 +297,40 @@ def insert_from_json(cursor: Cursor, table_name: str, json_value: dict, json_col
     cursor.execute(insert_statement, insert_data)
 
 
-database_name = "homestead"
-database_user = "postgres"
-database_password = "9Y2LEH8kMj"
-database_host = "127.0.0.1"
-database_port = "54320"
+if __name__ == "__main__":
+    database_name = "homestead"
+    database_user = "postgres"
+    database_password = "9Y2LEH8kMj"
+    database_host = "127.0.0.1"
+    database_port = "54320"
 
-database_uri = construct_database_uri(
-    database_name=database_name,
-    username=database_user,
-    password=database_password,
-    host=database_host,
-    port=database_port,
-)
+    database_uri = construct_database_uri(
+        database_name=database_name,
+        username=database_user,
+        password=database_password,
+        host=database_host,
+        port=database_port,
+    )
 
-connection = psycopg.connect(database_uri)
+    connection = psycopg.connect(database_uri)
 
-cursor = connection.cursor()
+    cursor = connection.cursor()
 
-db_rewind(cursor)
+    db_rewind(cursor)
 
-# enable_trigger(cursor, "users")
+    # enable_trigger(cursor, "users")
 
-# create_t_history_table(cursor=cursor)
-# create_trigger_function(cursor=cursor)
-# register_tables(cursor=cursor)
+    # create_t_history_table(cursor=cursor)
+    # create_trigger_function(cursor=cursor)
+    # register_tables(cursor=cursor)
 
-# print(res)
+    # print(res)
 
-# cursor.execute("select * from t_history;")
-# rows = cursor.fetchall()
-# print(rows)
+    # cursor.execute("select * from t_history;")
+    # rows = cursor.fetchall()
+    # print(rows)
 
-connection.commit()
+    connection.commit()
 
-cursor.close()
-connection.close()
+    cursor.close()
+    connection.close()
