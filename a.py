@@ -164,6 +164,18 @@ def enable_all_db_triggers(cursor: Cursor):
     )
 
 
+def get_json_columns(table_name: str) -> list:
+    cursor.execute(
+        f"""
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = '{table_name}' AND data_type in ('json', 'jsonb')
+        """
+    )
+
+    return [it[0] for it in cursor.fetchall()]
+
+
 def db_rewind(cursor: Cursor):
     disable_all_db_triggers(cursor)
 
@@ -187,18 +199,21 @@ def db_rewind(cursor: Cursor):
         new_val = it[2]
         old_val = it[3]
 
+        json_columns: list = get_json_columns(table_name)
+
         match operation:
             case "UPDATE":
-                update_from_json(cursor, table_name, old_val)
+                update_from_json(cursor, table_name, old_val,json_columns)
             case "INSERT":
                 delete_from_json(cursor, table_name, new_val)
             case "DELETE":
-                insert_from_json(cursor, table_name, old_val)
+                insert_from_json(cursor, table_name, old_val, json_columns)
 
+    flush_t_history_table(cursor)
     enable_all_db_triggers(cursor)
 
 
-def update_from_json(cursor: Cursor, table_name: str, json_value: dict):
+def update_from_json(cursor: Cursor, table_name: str, json_value: dict, json_columns: list):
     condition_column = "id"
     condition_value = json_value["id"]
 
@@ -219,7 +234,13 @@ def update_from_json(cursor: Cursor, table_name: str, json_value: dict):
         where_clause
     )
 
-    update_data = [it if type(it) != dict else json.dumps(it) for it in json_value.values()] + [condition_value]
+    update_data = []
+    for key, value in json_value.items():
+        if key in json_columns:
+            value = json.dumps(value)
+        update_data.append(value)
+
+    update_data.append(condition_value)
 
     print(update_query.as_string(cursor))
 
@@ -244,7 +265,7 @@ def delete_from_json(cursor: Cursor, table_name: str, json_value: dict):
     cursor.execute(delete_query, [condition_value])
 
 
-def insert_from_json(cursor: Cursor, table_name: str, json_value: dict):
+def insert_from_json(cursor: Cursor, table_name: str, json_value: dict, json_columns: list):
     columns = sql.SQL(", ").join(
         [
             sql.Identifier(column)
@@ -265,7 +286,11 @@ def insert_from_json(cursor: Cursor, table_name: str, json_value: dict):
         values_place_holder
     )
 
-    insert_data = [it if type(it) != dict else json.dumps(it) for it in json_value.values()]
+    insert_data = []
+    for key, value in json_value.items():
+        if key in json_columns:
+            value = json.dumps(value)
+        insert_data.append(value)
 
     print(insert_statement.as_string(cursor))
 
@@ -304,7 +329,7 @@ db_rewind(cursor)
 # rows = cursor.fetchall()
 # print(rows)
 
-# connection.commit()
+connection.commit()
 
 cursor.close()
 connection.close()
