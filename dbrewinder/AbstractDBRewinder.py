@@ -50,25 +50,25 @@ class AbstractDBRewinder(metaclass=abc.ABCMeta):
         pass
 
     @abstractmethod
+    def enable_all_db_triggers(self) -> None:
+        pass
+
+    @abstractmethod
     def get_logs(self) -> List[Log]:
         pass
 
     @abstractmethod
-    def update_from_json(self, table_name: str, old_val: dict) -> None:
+    def update_from_json(self, table_name: str, json_value: dict) -> None:
         pass
 
     @abstractmethod
-    def delete_from_json(self, table_name: str, new_val: dict) -> None:
+    def delete_from_json(self, table_name: str, json_value: dict) -> None:
         pass
 
     @abstractmethod
-    def insert_from_json(self, table_name: str, old_val: dict) -> None:
+    def insert_from_json(self, table_name: str, json_value: dict) -> None:
         pass
 
     @abstractmethod
     def flush_logs(self) -> None:
-        pass
-
-    @abstractmethod
-    def enable_all_db_triggers(self) -> None:
         pass
