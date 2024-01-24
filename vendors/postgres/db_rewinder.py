@@ -3,8 +3,7 @@ from typing import List
 
 from psycopg import Cursor, sql
 
-from dbrewinder import abstract_db_rewinder
-from dbrewinder.abstract_db_rewinder import Log, AbstractDBRewinder
+from dbrewinder.abstract_db_rewinder import Log, AbstractDBRewinder, LogEvent
 
 
 class DBRewinder(AbstractDBRewinder):
@@ -30,7 +29,7 @@ class DBRewinder(AbstractDBRewinder):
             """
                 SELECT 
                     id,
-                    tstamp
+                    tstamp,
                     tabname, 
                     operation, 
                     new_val, 
@@ -40,15 +39,17 @@ class DBRewinder(AbstractDBRewinder):
             """
         )
 
+        res = self.cursor.fetchall()
+
         return [
             Log(
                 id=it[0],
                 timestamp=it[1],
                 table_name=it[2],
-                operation=it[3],  # TODO: convert to enum
+                operation=DBRewinder._map_to_operation_enum(it[3]),
                 new_val=it[4],
                 old_val=it[5]
-            ) for it in self.cursor.fetchall()
+            ) for it in res
         ]
 
     def update_from_json(self, table_name: str, json_value: dict):
@@ -149,3 +150,13 @@ class DBRewinder(AbstractDBRewinder):
         )
 
         return [it[0] for it in self.cursor.fetchall()]
+
+    @staticmethod
+    def _map_to_operation_enum(operation: str) -> LogEvent:
+        match operation:
+            case "INSERT":
+                return LogEvent.INSERT
+            case "UPDATE":
+                return LogEvent.UPDATE
+            case "DELETE":
+                return LogEvent.DELETE
