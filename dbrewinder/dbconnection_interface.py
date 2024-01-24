@@ -3,7 +3,7 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from DBCursorInterface import DBCursorInterface
+    from dbcursor_interface import DBCursorInterface
 
 
 class DBConnectionInterface(metaclass=abc.ABCMeta):
@@ -19,7 +19,7 @@ class DBConnectionInterface(metaclass=abc.ABCMeta):
         pass
 
     @abstractmethod
-    def cursor(self) -> DBCursorInterface:
+    def cursor(self) -> "DBCursorInterface":
         pass
 
     @abstractmethod

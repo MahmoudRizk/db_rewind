@@ -1,5 +1,7 @@
-from dbrewinder import DBCursorInterface
+from dbrewinder import dbcursor_interface
 from psycopg import Cursor
+
+from dbrewinder.dbcursor_interface import DBCursorInterface
 
 
 class DBCursor(DBCursorInterface):

@@ -3,8 +3,8 @@ from typing import List
 
 from psycopg import Cursor, sql
 
-from dbrewinder import AbstractDBRewinder
-from dbrewinder.AbstractDBRewinder import Log
+from dbrewinder import abstract_db_rewinder
+from dbrewinder.abstract_db_rewinder import Log, AbstractDBRewinder
 
 
 class DBRewinder(AbstractDBRewinder):

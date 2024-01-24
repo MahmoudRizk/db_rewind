@@ -1,8 +1,9 @@
 import psycopg
 from psycopg import Connection
 
-from dbrewinder import DBConnectionInterface
-from vendors.postgres.DBCursor import DBCursor
+from dbrewinder import dbconnection_interface
+from dbrewinder.dbconnection_interface import DBConnectionInterface
+from vendors.postgres.dbcursor import DBCursor
 
 
 class DBConnection(DBConnectionInterface):

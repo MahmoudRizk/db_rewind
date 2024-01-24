@@ -1,6 +1,6 @@
 from psycopg import Cursor
 
-from dbrewinder import AbstractSetup
+from dbrewinder import abstract_setup
 
 
 class Setup(AbstractSetup):
