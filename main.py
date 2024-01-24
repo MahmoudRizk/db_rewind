@@ -1,5 +1,6 @@
 from vendors.postgres.dbconnection import DBConnection
 from vendors.postgres.db_rewinder import DBRewinder
+from vendors.postgres.setup import Setup
 
 if __name__ == "__main__":
     database_name = "homestead"
@@ -18,21 +19,18 @@ if __name__ == "__main__":
 
     cursor = connection.cursor()
 
-    db_rewinder: DBRewinder = DBRewinder(cursor=cursor.cursor)
+    db_setup = Setup(cursor=cursor.cursor)
 
+    # db_setup.drop_trigger_function()
+    # db_setup.drop_logs_table()
+
+    # db_setup.create_logs_table()
+    # db_setup.create_trigger_function()
+    # db_setup.register_all_tables_to_trigger()
+
+    db_rewinder: DBRewinder = DBRewinder(cursor=cursor.cursor)
     db_rewinder.rewind()
 
-    # enable_trigger(cursor, "users")
-
-    # create_t_history_table(cursor=cursor)
-    # create_trigger_function(cursor=cursor)
-    # register_tables(cursor=cursor)
-
-    # print(res)
-
-    # cursor.execute("select * from t_history;")
-    # rows = cursor.fetchall()
-    # print(rows)
 
     connection.commit()
 

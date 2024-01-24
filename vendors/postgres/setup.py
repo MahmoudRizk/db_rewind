@@ -8,6 +8,7 @@ class Setup(AbstractSetup):
         self.cursor = cursor
 
     def create_logs_table(self):
+        print("Create t_history table if not exists.")
         self.cursor.execute(
             """
                 CREATE TABLE IF NOT EXISTS t_history(
@@ -21,7 +22,16 @@ class Setup(AbstractSetup):
             """
         )
 
+    def drop_logs_table(self):
+        print("Dropping t_history table")
+        self.cursor.execute(
+            """
+                DROP TABLE IF EXISTS t_history CASCADE;
+            """
+        )
+
     def create_trigger_function(self):
+        print("Create or replace change_trigger function.")
         self.cursor.execute(
             """
                 CREATE OR REPLACE FUNCTION change_trigger() 
@@ -50,7 +60,14 @@ class Setup(AbstractSetup):
             """
         )
 
+    def drop_trigger_function(self):
+        print("Drop change_trigger function.")
+        self.cursor.execute("""
+            DROP FUNCTION IF EXISTS change_trigger() CASCADE;
+        """)
+
     def register_table_to_trigger(self, table_name: str):
+        print(f"Registering {table_name} to change_trigger function.")
         self.cursor.execute(
             f"""
                     CREATE OR REPLACE TRIGGER trigger_{table_name}
@@ -59,8 +76,26 @@ class Setup(AbstractSetup):
                 """
         )
 
+    def unregister_table_from_trigger(self, table_name: str):
+        print(f"unregistering {table_name} from change_trigger function.")
+        self.cursor.execute(
+            f"""
+                DROP TRIGGER IF EXISTS trigger_{table_name} ON {table_name}
+            """
+        )
+
     def register_all_tables_to_trigger(self):
-        tables = self.cursor.execute(
+        print("Registering all tables to change_trigger function.")
+        for tab in self._get_tables():
+            self.register_table_to_trigger(table_name=tab[0])
+
+    def unregister_all_tables_from_trigger(self):
+        print("Unregistering all tables from change_trigger function.")
+        for tab in self._get_tables():
+            self.unregister_table_from_trigger(table_name=tab[0])
+
+    def _get_tables(self):
+        res = self.cursor.execute(
             """
                 SELECT 
                     table_name 
@@ -73,5 +108,5 @@ class Setup(AbstractSetup):
                         table_name != 't_history' ;
             """
         )
-        for tab in tables.fetchall():
-            self.register_table_to_trigger(table_name=tab[0])
+
+        return res.fetchall()
