@@ -24,7 +24,33 @@ def main_menu(session: PromptSession, dbconnection: DBConnection):
                 db_setup = Setup(cursor=cursor.cursor)
                 setup_menu(session=session, db_setup=db_setup, dbconnection=dbconnection)
             case 'rewinder':
-                print('not implemented yet.')
+                cursor = dbconnection.cursor()
+                db_rewinder = DBRewinder(cursor=cursor.cursor)
+                db_rewinder_menu(session=session, db_rewinder=db_rewinder, dbconnection=dbconnection)
+            case _:
+                print('available commands')
+                print(commands)
+
+
+def db_rewinder_menu(session: PromptSession, db_rewinder: DBRewinder, dbconnection: DBConnection):
+    commands = [
+        'help',
+        'exit',
+        'rewind'
+    ]
+
+    def rewind():
+        db_rewinder.rewind()
+        dbconnection.commit()
+
+    while True:
+        command = session.prompt('>DBRewinder: ')
+
+        match command:
+            case 'exit':
+                break
+            case 'rewind':
+                rewind()
             case _:
                 print('available commands')
                 print(commands)
