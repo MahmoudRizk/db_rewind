@@ -1,6 +1,8 @@
 from vendors.postgres.dbconnection import DBConnection
 from vendors.postgres.db_rewinder import DBRewinder
-from vendors.postgres.setup import Setup
+from vendors.postgres.setup import Setup as DBSetup
+from console.menu.setup import Setup as ConsoleSetup
+
 import click
 from prompt_toolkit import prompt, PromptSession
 
@@ -21,8 +23,12 @@ def main_menu(session: PromptSession, dbconnection: DBConnection):
                 break
             case 'setup':
                 cursor = dbconnection.cursor()
-                db_setup = Setup(cursor=cursor.cursor)
-                setup_menu(session=session, db_setup=db_setup, dbconnection=dbconnection)
+                db_setup = DBSetup(cursor=cursor.cursor)
+                ConsoleSetup(session=session).execute(
+                    session=session,
+                    db_setup=db_setup,
+                    dbconnection=dbconnection
+                )
             case 'rewinder':
                 cursor = dbconnection.cursor()
                 db_rewinder = DBRewinder(cursor=cursor.cursor)
@@ -56,7 +62,7 @@ def db_rewinder_menu(session: PromptSession, db_rewinder: DBRewinder, dbconnecti
                 print(commands)
 
 
-def setup_menu(session: PromptSession, db_setup: Setup, dbconnection: DBConnection):
+def setup_menu(session: PromptSession, db_setup: DBSetup, dbconnection: DBConnection):
     commands = [
         'help',
         'exit',
