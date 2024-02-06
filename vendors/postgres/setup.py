@@ -7,6 +7,16 @@ class Setup(AbstractSetup):
     def __init__(self, cursor: Cursor):
         self.cursor = cursor
 
+    def auto_install(self):
+        self.create_logs_table()
+        self.create_trigger_function()
+        self.register_all_tables_to_trigger()
+
+    def auto_uninstall(self):
+        self.unregister_all_tables_from_trigger()
+        self.drop_trigger_function()
+        self.drop_logs_table()
+
     def create_logs_table(self):
         print("Create t_history table if not exists.")
         self.cursor.execute(
