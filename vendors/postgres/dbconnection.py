@@ -1,5 +1,5 @@
 import psycopg
-from psycopg import Connection
+from psycopg import Connection, ClientCursor
 
 from dbrewinder.dbconnection_interface import DBConnectionInterface
 from vendors.postgres.dbcursor import DBCursor
@@ -31,7 +31,7 @@ class DBConnection(DBConnectionInterface):
         self.database_name = database_name
 
         self.uri: str = self._construct_database_uri()
-        self.connection: Connection = psycopg.connect(self.uri)
+        self.connection: Connection = psycopg.connect(self.uri, cursor_factory=ClientCursor)
 
     def cursor(self):
         return DBCursor(self.connection.cursor())
