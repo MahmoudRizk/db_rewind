@@ -67,10 +67,11 @@ class Setup(AbstractSetup):
         """)
 
     def register_table_to_trigger(self, table_name: str):
+        self.unregister_table_from_trigger(table_name=table_name)
         print(f"Registering {table_name} to change_trigger function.")
         self.cursor.execute(
             f"""
-                    CREATE OR REPLACE TRIGGER trigger_{table_name}
+                    CREATE TRIGGER trigger_{table_name}
                     BEFORE INSERT OR UPDATE OR DELETE ON {table_name}
                     FOR EACH ROW EXECUTE PROCEDURE change_trigger();
                 """
