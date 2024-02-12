@@ -1,8 +1,7 @@
 from typing import Optional, List
 
-from vendors.postgres.config_file_handler.config_line import ConfigLine
-from vendors.postgres.config_file_handler.file_handler_commands import EnableDirectiveCommand, DisableDirectiveCommand, \
-    SetDirectiveValueCommand
+from .config_line import ConfigLine
+from .file_handler_commands import EnableDirectiveCommand, DisableDirectiveCommand, SetDirectiveValueCommand
 
 
 class FileHandler:

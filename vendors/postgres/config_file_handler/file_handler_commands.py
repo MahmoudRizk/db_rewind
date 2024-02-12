@@ -1,7 +1,7 @@
 import abc
 from typing import Optional
 
-from vendors.postgres.config_file_handler.config_line import ConfigLine
+from .config_line import ConfigLine
 
 
 class ConfigFileCommand(metaclass=abc.ABCMeta):
