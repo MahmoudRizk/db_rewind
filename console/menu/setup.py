@@ -18,13 +18,24 @@ class Setup(Menu):
         Setup.configure_postgres_conf_file()
         Setup.restart_postgres_server()
 
+        Setup.archive_wal_files()
+        Setup.create_db_base_backup()
+
     @staticmethod
     def configure_postgres_conf_file(**kwargs):
         subprocess.run([sys.executable, '-m', 'vendors.postgres.config_file_setup'])
 
     @staticmethod
     def restart_postgres_server(**kwargs):
-        subprocess.run([sys.executable, '-m', 'vendors.postgres.restart_db_server'])
+        subprocess.run([sys.executable, '-m', 'vendors.postgres.db_server_manager', 'restart'])
+
+    @staticmethod
+    def archive_wal_files():
+        subprocess.run([sys.executable, '-m', 'vendors.postgres.archive_wal_files'])
+
+    @staticmethod
+    def create_db_base_backup():
+        subprocess.run([sys.executable, '-m', 'vendors.postgres.create_db_base_backup'])
 
     def _get_commands(self) -> List[Command]:
         return [

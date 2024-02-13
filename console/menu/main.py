@@ -5,6 +5,7 @@ from prompt_toolkit import PromptSession
 from console.component.command import Command
 from console.component.menu import Menu
 from console.menu.setup import Setup as ConsoleSetup
+from console.menu.rewinder import Rewinder as DBRewinder
 
 
 class Main(Menu):
@@ -14,6 +15,12 @@ class Main(Menu):
     @staticmethod
     def setup(session: PromptSession, **kwargs):
         ConsoleSetup(session=session).execute(
+            session=session,
+        )
+
+    @staticmethod
+    def rewinder(session: PromptSession, **kwargs):
+        DBRewinder(session=session).execute(
             session=session,
         )
 
@@ -28,5 +35,10 @@ class Main(Menu):
                 name='setup',
                 description='Enter setup menu.',
                 callback=Main.setup
+            ),
+            Command(
+                name='rewinder',
+                description='Rewinder menu',
+                callback=Main.rewinder
             ),
         ]
