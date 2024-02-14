@@ -14,7 +14,7 @@ class Setup(Menu):
         super().__init__(session=session, prompt_name='setup')
 
     @staticmethod
-    def install(**kwargs) -> None:
+    def install() -> None:
         Setup.configure_postgres_conf_file()
         Setup.restart_postgres_server()
 
@@ -22,11 +22,11 @@ class Setup(Menu):
         Setup.create_db_base_backup()
 
     @staticmethod
-    def configure_postgres_conf_file(**kwargs):
+    def configure_postgres_conf_file():
         subprocess.run([sys.executable, '-m', 'vendors.postgres.config_file_setup'])
 
     @staticmethod
-    def restart_postgres_server(**kwargs):
+    def restart_postgres_server():
         subprocess.run([sys.executable, '-m', 'vendors.postgres.db_server_manager', 'restart'])
 
     @staticmethod

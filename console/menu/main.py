@@ -12,17 +12,11 @@ class Main(Menu):
     def __init__(self, session: PromptSession):
         super().__init__(session=session, prompt_name='')
 
-    @staticmethod
-    def setup(session: PromptSession, **kwargs):
-        ConsoleSetup(session=session).execute(
-            session=session,
-        )
+    def setup(self):
+        ConsoleSetup(session=self.session).execute()
 
-    @staticmethod
-    def rewinder(session: PromptSession, **kwargs):
-        DBRewinder(session=session).execute(
-            session=session,
-        )
+    def rewinder(self):
+        DBRewinder(session=self.session).execute()
 
     def _get_commands(self) -> List[Command]:
         return [
@@ -34,11 +28,11 @@ class Main(Menu):
             Command(
                 name='setup',
                 description='Enter setup menu.',
-                callback=Main.setup
+                callback=self.setup
             ),
             Command(
                 name='rewinder',
                 description='Rewinder menu',
-                callback=Main.rewinder
+                callback=self.rewinder
             ),
         ]

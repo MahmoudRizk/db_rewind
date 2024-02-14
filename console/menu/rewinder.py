@@ -12,10 +12,9 @@ class Rewinder(Menu):
     def __init__(self, session: PromptSession):
         super().__init__(session=session, prompt_name='DBRewinder')
 
-    @staticmethod
-    def rewind(session: PromptSession, **kwargs):
+    def rewind(self):
         print('Please enter date time to rewind to in format YYYY-mm-dd HH:MM:SS :')
-        date_time = session.prompt("")
+        date_time = self.session.prompt("")
 
         Rewinder.archive_wal_files()
         Rewinder.stop_postgres_server()
@@ -27,11 +26,11 @@ class Rewinder(Menu):
         Rewinder.start_postgres_server()
 
     @staticmethod
-    def stop_postgres_server(**kwargs):
+    def stop_postgres_server():
         subprocess.run([sys.executable, '-m', 'vendors.postgres.db_server_manager', 'stop'])
 
     @staticmethod
-    def start_postgres_server(**kwargs):
+    def start_postgres_server():
         subprocess.run([sys.executable, '-m', 'vendors.postgres.db_server_manager', 'start'])
 
     @staticmethod
@@ -64,6 +63,6 @@ class Rewinder(Menu):
             Command(
                 name='rewind',
                 description='Rewind Database',
-                callback=Rewinder.rewind
+                callback=self.rewind
             )
         ]

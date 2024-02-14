@@ -13,7 +13,7 @@ class Menu(metaclass=abc.ABCMeta):
         self.session: PromptSession = session
         self.prompt_name: str = prompt_name
 
-    def execute(self, **kwargs):
+    def execute(self):
         while True:
             cli_input = Menu.convert_from_kebab_to_snake_case(
                 self.session.prompt(f">{self.prompt_name}: ")
@@ -27,7 +27,7 @@ class Menu(metaclass=abc.ABCMeta):
             if not command:
                 self.print_commands_for_help()
             else:
-                command.get_callback()(**kwargs)
+                command.get_callback()()
 
     @staticmethod
     def get_command(command_name: str, commands: List[Command]) -> Optional[Command]:

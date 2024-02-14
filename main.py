@@ -10,9 +10,7 @@ def main():
 
     session = PromptSession()
 
-    ConsoleMain(session).execute(
-        session=session,
-    )
+    ConsoleMain(session).execute()
     print('GoodBye!')
 
 
