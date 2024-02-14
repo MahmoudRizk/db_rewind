@@ -1,5 +1,4 @@
-import subprocess
-import sys
+from multiprocessing import Process
 
 from typing import List
 
@@ -7,6 +6,10 @@ from prompt_toolkit import PromptSession
 
 from console.component.command import Command
 from console.component.menu import Menu
+from vendors.postgres.archive_wal_files import ArchiveWalFiles
+from vendors.postgres.config_file_setup import ConfigFileSetup
+from vendors.postgres.create_db_base_backup import CreateDBBaseBackup
+from vendors.postgres.db_server_manager import DBServerManager
 
 
 class Setup(Menu):
@@ -23,19 +26,27 @@ class Setup(Menu):
 
     @staticmethod
     def configure_postgres_conf_file():
-        subprocess.run([sys.executable, '-m', 'vendors.postgres.config_file_setup'])
+        p = Process(target=ConfigFileSetup.execute)
+        p.start()
+        p.join()
 
     @staticmethod
     def restart_postgres_server():
-        subprocess.run([sys.executable, '-m', 'vendors.postgres.db_server_manager', 'restart'])
+        p = Process(target=DBServerManager.execute, args=('restart',))
+        p.start()
+        p.join()
 
     @staticmethod
     def archive_wal_files():
-        subprocess.run([sys.executable, '-m', 'vendors.postgres.archive_wal_files'])
+        p = Process(target=ArchiveWalFiles.execute)
+        p.start()
+        p.join()
 
     @staticmethod
     def create_db_base_backup():
-        subprocess.run([sys.executable, '-m', 'vendors.postgres.create_db_base_backup'])
+        p = Process(target=CreateDBBaseBackup.execute)
+        p.start()
+        p.join()
 
     def _get_commands(self) -> List[Command]:
         return [

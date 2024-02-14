@@ -11,14 +11,28 @@ class ConfigFileSetup:
         self.archive_command = archive_command
         self.restore_command = restore_command
 
-    def execute(self) -> None:
-        print('Editing postgres config file.')
-        self.enable_and_set_wal_level_to_archive()
-        self.enable_and_set_archive_mode_to_on()
-        self.enable_and_set_archive_command()
-        self.enable_and_set_restore_command()
+    @staticmethod
+    def execute():
+        user_name = os.environ['DB_REWINDER_HOST_POSTGRES_USER']
+        switch_user(user_name=user_name)
 
-        self.config_file.save()
+        print('Configuring postgres configuration file.')
+        file_path = os.environ['DB_REWINDER_POSTGRES_CONFIG_FILE_PATH']
+        print(f"Postgres Config File: {file_path}")
+
+        archive_command = os.environ['DB_REWINDER_POSTGRES_ARCHIVE_COMMAND']
+        restore_command = os.environ['DB_REWINDER_POSTGRES_RESTORE_COMMAND']
+
+        config_file_setup = ConfigFileSetup(file_path=file_path, archive_command=archive_command,
+                                            restore_command=restore_command)
+
+        print('Editing postgres config file.')
+        config_file_setup.enable_and_set_wal_level_to_archive()
+        config_file_setup.enable_and_set_archive_mode_to_on()
+        config_file_setup.enable_and_set_archive_command()
+        config_file_setup.enable_and_set_restore_command()
+
+        config_file_setup.config_file.save()
 
     def enable_and_set_wal_level_to_archive(self) -> None:
         print('enable wal archive.')
@@ -35,19 +49,3 @@ class ConfigFileSetup:
     def enable_and_set_restore_command(self) -> None:
         print('set restore command.')
         self.config_file.set_directive_value('restore_command', self.restore_command, True)
-
-
-if __name__ == '__main__':
-    user_name = os.environ['DB_REWINDER_HOST_POSTGRES_USER']
-    switch_user(user_name=user_name)
-
-    print('Configuring postgres configuration file.')
-    file_path = os.environ['DB_REWINDER_POSTGRES_CONFIG_FILE_PATH']
-    print(f"Postgres Config File: {file_path}")
-
-    archive_command = os.environ['DB_REWINDER_POSTGRES_ARCHIVE_COMMAND']
-    restore_command = os.environ['DB_REWINDER_POSTGRES_RESTORE_COMMAND']
-
-    config_file_setup = ConfigFileSetup(file_path=file_path, archive_command=archive_command,
-                                        restore_command=restore_command)
-    config_file_setup.execute()
