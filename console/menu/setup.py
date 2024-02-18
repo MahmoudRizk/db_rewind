@@ -1,5 +1,3 @@
-from multiprocessing import Process
-
 from typing import List
 
 from prompt_toolkit import PromptSession
@@ -26,27 +24,19 @@ class Setup(Menu):
 
     @staticmethod
     def configure_postgres_conf_file():
-        p = Process(target=ConfigFileSetup.execute)
-        p.start()
-        p.join()
+        ConfigFileSetup.execute()
 
     @staticmethod
     def restart_postgres_server():
-        p = Process(target=DBServerManager.execute, args=('restart',))
-        p.start()
-        p.join()
+        DBServerManager.execute('restart')
 
     @staticmethod
     def archive_wal_files():
-        p = Process(target=ArchiveWalFiles.execute)
-        p.start()
-        p.join()
+        ArchiveWalFiles.execute()
 
     @staticmethod
     def create_db_base_backup():
-        p = Process(target=CreateDBBaseBackup.execute)
-        p.start()
-        p.join()
+        CreateDBBaseBackup.execute()
 
     def _get_commands(self) -> List[Command]:
         return [

@@ -1,15 +1,13 @@
-import os
-
-from vendors.postgres import switch_user
+from vendors.postgres import from_env
+from vendors.postgres.os_handler.os_command_handler import OsCommandHandler
+from vendors.postgres.os_handler.os_new_process_handler import OsNewProcessHandler
 
 
 class DBServerManager:
     @staticmethod
+    @OsNewProcessHandler.in_new_process(as_user=from_env('DB_REWINDER_HOST_ROOT_USER'))
     def execute(command: str):
-        user_name = os.environ['DB_REWINDER_HOST_ROOT_USER']
-        switch_user(user_name=user_name)
-
         sys_command = f"systemctl {command} postgresql.service"
         print(f"{command} postgres server using systemctl: {sys_command}")
 
-        os.system(sys_command)
+        return OsCommandHandler.execute(sys_command)

@@ -1,7 +1,6 @@
-import os
-
-from vendors.postgres import switch_user
+from vendors.postgres import from_env
 from .config_file_handler.file_handler import FileHandler
+from .os_handler.os_new_process_handler import OsNewProcessHandler
 
 
 class ConfigFileSetup:
@@ -12,16 +11,14 @@ class ConfigFileSetup:
         self.restore_command = restore_command
 
     @staticmethod
+    @OsNewProcessHandler.in_new_process(as_user=from_env('DB_REWINDER_HOST_POSTGRES_USER'))
     def execute():
-        user_name = os.environ['DB_REWINDER_HOST_POSTGRES_USER']
-        switch_user(user_name=user_name)
-
         print('Configuring postgres configuration file.')
-        file_path = os.environ['DB_REWINDER_POSTGRES_CONFIG_FILE_PATH']
+        file_path = from_env('DB_REWINDER_POSTGRES_CONFIG_FILE_PATH')
         print(f"Postgres Config File: {file_path}")
 
-        archive_command = os.environ['DB_REWINDER_POSTGRES_ARCHIVE_COMMAND']
-        restore_command = os.environ['DB_REWINDER_POSTGRES_RESTORE_COMMAND']
+        archive_command = from_env('DB_REWINDER_POSTGRES_ARCHIVE_COMMAND')
+        restore_command = from_env('DB_REWINDER_POSTGRES_RESTORE_COMMAND')
 
         config_file_setup = ConfigFileSetup(file_path=file_path, archive_command=archive_command,
                                             restore_command=restore_command)

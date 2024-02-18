@@ -1,4 +1,3 @@
-from multiprocessing import Process
 from typing import List
 
 from prompt_toolkit import PromptSession
@@ -32,45 +31,31 @@ class Rewinder(Menu):
 
     @staticmethod
     def stop_postgres_server():
-        p = Process(target=DBServerManager.execute, args=('stop',))
-        p.start()
-        p.join()
+        DBServerManager.execute('stop')
 
     @staticmethod
     def start_postgres_server():
-        p = Process(target=DBServerManager.execute, args=('start',))
-        p.start()
-        p.join()
+        DBServerManager.execute('start')
 
     @staticmethod
     def destroy_db_data():
-        p = Process(target=DestroyDBData.execute)
-        p.start()
-        p.join()
+        DestroyDBData.execute()
 
     @staticmethod
     def restore_db_base_backup():
-        p = Process(target=RestoreDBBaseBackup.execute)
-        p.start()
-        p.join()
+        RestoreDBBaseBackup.execute()
 
     @staticmethod
     def create_recovery_signal_file():
-        p = Process(target=CreateRecoverySignalFile.execute)
-        p.start()
-        p.join()
+        CreateRecoverySignalFile.execute()
 
     @staticmethod
     def set_db_rewind_date(db_rewind_date: str):
-        p = Process(target=SetDBRewindDate.execute, args=(db_rewind_date,))
-        p.start()
-        p.join()
+        SetDBRewindDate.execute(db_rewind_date)
 
     @staticmethod
     def archive_wal_files():
-        p = Process(target=ArchiveWalFiles.execute)
-        p.start()
-        p.join()
+        ArchiveWalFiles.execute()
 
     def _get_commands(self) -> List[Command]:
         return [

@@ -1,9 +1,7 @@
-def switch_user(user_name: str) -> None:
-    import pwd
+def from_env(variable_name):
     import os
+    from dotenv import load_dotenv
 
-    print(f"Switching to user: {user_name}")
-    user = pwd.getpwnam(user_name)
+    load_dotenv()
 
-    os.setgid(user.pw_uid)
-    os.setuid(user.pw_uid)
+    return os.environ[variable_name]
