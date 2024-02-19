@@ -1,6 +1,7 @@
 from vendors.postgres import from_env
 from vendors.postgres.config_file_handler.file_handler import FileHandler
 from vendors.postgres.os_handler.os_new_process_handler import OsNewProcessHandler
+from vendors.postgres.os_handler.os_response_dto import OsResponseDTO
 
 
 class SetDBRewindDate:
@@ -16,3 +17,5 @@ class SetDBRewindDate:
 
         config_file.set_directive_value('recovery_target_time', db_rewind_date, True)
         config_file.save()
+
+        return OsResponseDTO(exit_code=0)

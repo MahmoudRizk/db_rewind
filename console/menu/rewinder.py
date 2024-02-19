@@ -31,31 +31,38 @@ class Rewinder(Menu):
 
     @staticmethod
     def stop_postgres_server():
-        DBServerManager.execute('stop')
+        res = DBServerManager.execute('stop')
+        # print(res.as_dict())
 
     @staticmethod
     def start_postgres_server():
-        DBServerManager.execute('start')
+        res = DBServerManager.execute('start')
+        # print(res.as_dict())
 
     @staticmethod
     def destroy_db_data():
-        DestroyDBData.execute()
+        res = DestroyDBData.execute()
+        print(res.as_dict())
 
     @staticmethod
     def restore_db_base_backup():
-        RestoreDBBaseBackup.execute()
+        res = RestoreDBBaseBackup.execute()
+        print(res.as_dict())
 
     @staticmethod
     def create_recovery_signal_file():
-        CreateRecoverySignalFile.execute()
+        res = CreateRecoverySignalFile.execute()
+        print(res.as_dict())
 
     @staticmethod
     def set_db_rewind_date(db_rewind_date: str):
-        SetDBRewindDate.execute(db_rewind_date)
+        res = SetDBRewindDate.execute(db_rewind_date)
+        # print(res.as_dict())
 
     @staticmethod
     def archive_wal_files():
-        ArchiveWalFiles.execute()
+        res = ArchiveWalFiles.execute()
+        print(res.as_dict())
 
     def _get_commands(self) -> List[Command]:
         return [

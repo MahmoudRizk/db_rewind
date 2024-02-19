@@ -1,12 +1,13 @@
 from vendors.postgres import from_env
 from vendors.postgres.os_handler.os_command_handler import OsCommandHandler
 from vendors.postgres.os_handler.os_new_process_handler import OsNewProcessHandler
+from vendors.postgres.os_handler.os_response_dto import OsResponseDTO
 
 
 class CreateDBBaseBackup:
     @staticmethod
     @OsNewProcessHandler.in_new_process(as_user=from_env('DB_REWINDER_HOST_POSTGRES_USER'))
-    def execute():
+    def execute() -> OsResponseDTO:
         # Return failed procedure and skip executing others.
 
         res = CreateDBBaseBackup.set_db_in_backup_mode()
@@ -20,7 +21,7 @@ class CreateDBBaseBackup:
         return CreateDBBaseBackup.stop_db_backup_mode()
 
     @staticmethod
-    def set_db_in_backup_mode():
+    def set_db_in_backup_mode() -> OsResponseDTO:
         # Set database in backup mode first using.
         command = "psql -c \"SELECT pg_start_backup('label');\""
         print('Running pg_start_backup.')
@@ -28,7 +29,7 @@ class CreateDBBaseBackup:
         return OsCommandHandler.execute(command)
 
     @staticmethod
-    def backup_database():
+    def backup_database() -> OsResponseDTO:
         base_backup_dir = from_env("DB_REWINDER_POSTGRES_BASE_BACKUP_DIR")
         main_db_dir = from_env("DB_REWINDER_POSTGRES_DATA_DIR")
 
@@ -41,7 +42,7 @@ class CreateDBBaseBackup:
         return OsCommandHandler.execute(command)
 
     @staticmethod
-    def stop_db_backup_mode():
+    def stop_db_backup_mode() -> OsResponseDTO:
         # Stop database backup mode.
         command = 'psql -c "SELECT pg_stop_backup();"'
         print('Running pg_stop_backup.')

@@ -1,18 +1,14 @@
 from vendors.postgres import from_env
 from .config_file_handler.file_handler import FileHandler
 from .os_handler.os_new_process_handler import OsNewProcessHandler
+from .os_handler.os_response_dto import OsResponseDTO
 
 
 class ConfigFileSetup:
-    def __init__(self, file_path: str, archive_command: str, restore_command: str):
-        self.file_path = file_path
-        self.config_file = FileHandler(file_path=self.file_path)
-        self.archive_command = archive_command
-        self.restore_command = restore_command
 
     @staticmethod
     @OsNewProcessHandler.in_new_process(as_user=from_env('DB_REWINDER_HOST_POSTGRES_USER'))
-    def execute():
+    def execute() -> OsResponseDTO:
         print('Configuring postgres configuration file.')
         file_path = from_env('DB_REWINDER_POSTGRES_CONFIG_FILE_PATH')
         print(f"Postgres Config File: {file_path}")
@@ -30,6 +26,14 @@ class ConfigFileSetup:
         config_file_setup.enable_and_set_restore_command()
 
         config_file_setup.config_file.save()
+
+        return OsResponseDTO(exit_code=0)
+
+    def __init__(self, file_path: str, archive_command: str, restore_command: str):
+        self.file_path = file_path
+        self.config_file = FileHandler(file_path=self.file_path)
+        self.archive_command = archive_command
+        self.restore_command = restore_command
 
     def enable_and_set_wal_level_to_archive(self) -> None:
         print('enable wal archive.')

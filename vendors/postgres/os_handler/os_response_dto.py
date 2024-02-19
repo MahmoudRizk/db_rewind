@@ -1,5 +1,5 @@
 class OsResponseDTO:
-    def __init__(self, exit_code: int, message: bytes, error_message: bytes):
+    def __init__(self, exit_code: int, message: bytes = b'', error_message: bytes = b''):
         self._exit_code = exit_code
         self._message = message
         self._error_message = error_message
