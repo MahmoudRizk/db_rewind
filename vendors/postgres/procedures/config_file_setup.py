@@ -1,35 +1,33 @@
 from vendors.postgres import from_env
-from .config_file_handler.file_handler import FileHandler
-from .os_handler.os_new_process_handler import OsNewProcessHandler
-from .os_handler.os_response_dto import OsResponseDTO
+from vendors.postgres.config_file_handler.file_handler import FileHandler
+from vendors.postgres.os_handler.os_new_process_handler import OsNewProcessHandler
+from vendors.postgres.os_handler.os_response_dto import OsResponseDTO
+from vendors.postgres.procedures.base_procedure import BaseProcedure
 
 
-class ConfigFileSetup:
+class ConfigFileSetup(BaseProcedure):
 
-    @staticmethod
     @OsNewProcessHandler.in_new_process(as_user=from_env('DB_REWINDER_HOST_POSTGRES_USER'))
-    def execute() -> OsResponseDTO:
+    def _execute(self) -> OsResponseDTO:
         print('Configuring postgres configuration file.')
-        file_path = from_env('DB_REWINDER_POSTGRES_CONFIG_FILE_PATH')
-        print(f"Postgres Config File: {file_path}")
-
-        archive_command = from_env('DB_REWINDER_POSTGRES_ARCHIVE_COMMAND')
-        restore_command = from_env('DB_REWINDER_POSTGRES_RESTORE_COMMAND')
-
-        config_file_setup = ConfigFileSetup(file_path=file_path, archive_command=archive_command,
-                                            restore_command=restore_command)
+        print(f"Postgres Config File: {self.file_path}")
 
         print('Editing postgres config file.')
-        config_file_setup.enable_and_set_wal_level_to_archive()
-        config_file_setup.enable_and_set_archive_mode_to_on()
-        config_file_setup.enable_and_set_archive_command()
-        config_file_setup.enable_and_set_restore_command()
+        self.enable_and_set_wal_level_to_archive()
+        self.enable_and_set_archive_mode_to_on()
+        self.enable_and_set_archive_command()
+        self.enable_and_set_restore_command()
 
-        config_file_setup.config_file.save()
+        self.config_file.save()
 
         return OsResponseDTO(exit_code=0)
 
-    def __init__(self, file_path: str, archive_command: str, restore_command: str):
+    def __init__(self,
+                 file_path: str = from_env('DB_REWINDER_POSTGRES_CONFIG_FILE_PATH'),
+                 archive_command: str = from_env('DB_REWINDER_POSTGRES_ARCHIVE_COMMAND'),
+                 restore_command: str = from_env('DB_REWINDER_POSTGRES_RESTORE_COMMAND')):
+        super().__init__()
+
         self.file_path = file_path
         self.config_file = FileHandler(file_path=self.file_path)
         self.archive_command = archive_command

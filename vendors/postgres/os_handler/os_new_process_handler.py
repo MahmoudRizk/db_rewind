@@ -4,7 +4,7 @@ from multiprocessing import Process
 from multiprocessing import Pipe
 from typing import Optional, Callable
 
-from vendors.postgres.os_handler.os_response_dto import OsResponseDTO
+from .os_response_dto import OsResponseDTO
 
 
 class OsNewProcessHandler:

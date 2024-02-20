@@ -2,12 +2,13 @@ from vendors.postgres import from_env
 from vendors.postgres.os_handler.os_command_handler import OsCommandHandler
 from vendors.postgres.os_handler.os_new_process_handler import OsNewProcessHandler
 from vendors.postgres.os_handler.os_response_dto import OsResponseDTO
+from vendors.postgres.procedures.base_procedure import BaseProcedure
 
 
-class RestoreDBBaseBackup:
-    @staticmethod
+class RestoreDBBaseBackup(BaseProcedure):
+
     @OsNewProcessHandler.in_new_process(as_user=from_env('DB_REWINDER_HOST_POSTGRES_USER'))
-    def execute() -> OsResponseDTO:
+    def _execute(self) -> OsResponseDTO:
         # if not success, return and skip executing next procedures.
         res = RestoreDBBaseBackup.restore_backup()
         if not res.is_success():
