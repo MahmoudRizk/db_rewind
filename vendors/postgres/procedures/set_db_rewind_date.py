@@ -6,20 +6,22 @@ from vendors.postgres.procedures.base_procedure import BaseProcedure
 
 
 class SetDBRewindDate(BaseProcedure):
-    def __init__(self, db_rewind_date: str):
+    def __init__(self):
         super().__init__()
-        self.db_rewind_date = db_rewind_date
 
     @OsNewProcessHandler.in_new_process(as_user=from_env('DB_REWINDER_HOST_POSTGRES_USER'))
     def _execute(self):
+        print('Please enter date time to rewind to in format YYYY-mm-dd HH:MM:SS :')
+        db_rewind_date = input()
+
         print('Setting db rewind date in config file.')
-        print(f"db_rewind_date: {self.db_rewind_date}")
+        print(f"db_rewind_date: {db_rewind_date}")
 
         file_path = from_env('DB_REWINDER_POSTGRES_CONFIG_FILE_PATH')
 
         config_file = FileHandler(file_path=file_path)
 
-        config_file.set_directive_value('recovery_target_time', self.db_rewind_date, True)
+        config_file.set_directive_value('recovery_target_time', db_rewind_date, True)
         config_file.save()
 
         return OsResponseDTO(exit_code=0)

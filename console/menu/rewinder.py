@@ -12,10 +12,7 @@ class Rewinder(Menu):
         super().__init__(session=session, prompt_name='DBRewinder')
 
     def rewind(self):
-        print('Please enter date time to rewind to in format YYYY-mm-dd HH:MM:SS :')
-        date_time = self.session.prompt("")
-
-        DBRewinder.execute(db_rewind_date=date_time)
+        DBRewinder.execute()
 
     def _get_commands(self) -> List[Command]:
         return [

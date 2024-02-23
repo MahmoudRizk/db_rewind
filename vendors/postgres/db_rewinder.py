@@ -10,17 +10,17 @@ from vendors.postgres.procedures.set_db_rewind_date import SetDBRewindDate
 
 class DBRewinder:
     @staticmethod
-    def execute(db_rewind_date: str) -> OsResponseDTO:
-        return DBRewinder.get_procedures(db_rewind_date=db_rewind_date).execute()
+    def execute() -> OsResponseDTO:
+        return DBRewinder.get_procedures().execute()
 
     @staticmethod
-    def get_procedures(db_rewind_date: str) -> BaseProcedure:
+    def get_procedures() -> BaseProcedure:
         return ArchiveWalFiles().next(
             DBServerManager(command='stop').next(
                 DestroyDBData().next(
                     RestoreDBBaseBackup().next(
                         CreateRecoverySignalFile().next(
-                            SetDBRewindDate(db_rewind_date=db_rewind_date).next(
+                            SetDBRewindDate().next(
                                 DBServerManager(command='start')
                             )
                         )
