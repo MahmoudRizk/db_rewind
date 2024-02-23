@@ -1,5 +1,6 @@
 import pwd
 import os
+import sys
 from multiprocessing import Process
 from multiprocessing import Pipe
 from typing import Optional, Callable
@@ -18,11 +19,15 @@ class OsNewProcessHandler:
 
     @staticmethod
     def in_new_process(as_user=Optional[str]) -> Callable:
+        parent_stdin_fileno = sys.stdin.fileno()
+
         def decorator(func: Callable) -> Callable:
             def wrapper(*args, **kwargs) -> OsResponseDTO:
                 def new_process_func_wrapper(*args, **kwargs) -> None:
-                    # TODO: handle exceptions.
+                    # Is used for opening input using parent's process stdin.
+                    sys.stdin = os.fdopen(parent_stdin_fileno)
 
+                    # TODO: handle exceptions.
                     if as_user:
                         OsNewProcessHandler.switch_user(as_user)
 
