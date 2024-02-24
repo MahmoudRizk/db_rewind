@@ -23,15 +23,20 @@ class OsNewProcessHandler:
 
         def decorator(func: Callable) -> Callable:
             def wrapper(*args, **kwargs) -> OsResponseDTO:
-                def new_process_func_wrapper(*args, **kwargs) -> None:
+                def new_process_func_wrapper(self, *args, **kwargs) -> None:
                     # Is used for opening input using parent's process stdin.
+                    # This is a workaround to be able to open get input from user from another process.
                     sys.stdin = os.fdopen(parent_stdin_fileno)
+
+                    # setting stdin to parent's process stdin for prompt_session.
+                    self.prompt_session.input.stdin = sys.stdin
+
 
                     # TODO: handle exceptions.
                     if as_user:
                         OsNewProcessHandler.switch_user(as_user)
 
-                    child_conn.send(func(*args, **kwargs))
+                    child_conn.send(func(self, *args, **kwargs))
 
                 parent_conn, child_conn = Pipe()
                 p = Process(target=new_process_func_wrapper, args=args, kwargs=kwargs)

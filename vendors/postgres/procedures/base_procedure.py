@@ -1,11 +1,14 @@
 import abc
 from typing import Optional
 
+from prompt_toolkit import PromptSession
+
 from vendors.postgres.os_handler.os_response_dto import OsResponseDTO
 
 
 class BaseProcedure(metaclass=abc.ABCMeta):
     def __init__(self):
+        self.prompt_session = PromptSession()
         self.next_procedure: Optional[BaseProcedure] = None
 
     def execute(self) -> OsResponseDTO:
