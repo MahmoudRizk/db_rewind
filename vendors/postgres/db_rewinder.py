@@ -16,12 +16,12 @@ class DBRewinder:
     @staticmethod
     def get_procedures() -> BaseProcedure:
         return ArchiveWalFiles().next(
-            DBServerManager(command='stop').next(
+            DBServerManager.stop().next(
                 DestroyDBData().next(
                     RestoreDBBaseBackup().next(
                         CreateRecoverySignalFile().next(
                             SetDBRewindDate().next(
-                                DBServerManager(command='start')
+                                DBServerManager.start()
                             )
                         )
                     )

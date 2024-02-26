@@ -11,6 +11,18 @@ class DBServerManager(BaseProcedure):
         super().__init__()
         self.command = command
 
+    @staticmethod
+    def stop() -> "DBServerManager":
+        return DBServerManager(command='stop')
+
+    @staticmethod
+    def start() -> "DBServerManager":
+        return DBServerManager(command='start')
+
+    @staticmethod
+    def restart() -> "DBServerManager":
+        return DBServerManager(command='restart')
+
     def execute_as_user(self) -> Optional[str]:
         return from_env('DB_REWINDER_HOST_ROOT_USER')
 

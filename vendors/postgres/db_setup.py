@@ -14,7 +14,7 @@ class DBSetup:
     @staticmethod
     def get_procedures() -> BaseProcedure:
         return ConfigFileSetup().next(
-            DBServerManager('restart').next(
+            DBServerManager.restart().next(
                 ArchiveWalFiles().next(
                     CreateDBBaseBackup()
                 )
