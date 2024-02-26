@@ -1,4 +1,3 @@
-import shlex
 import subprocess
 
 from .os_response_dto import OsResponseDTO

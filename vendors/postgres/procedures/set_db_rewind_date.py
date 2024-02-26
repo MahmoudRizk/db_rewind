@@ -1,15 +1,15 @@
+from typing import Optional
+
 from vendors.postgres import from_env
 from vendors.postgres.config_file_handler.file_handler import FileHandler
-from vendors.postgres.os_handler.os_new_process_handler import OsNewProcessHandler
 from vendors.postgres.os_handler.os_response_dto import OsResponseDTO
 from vendors.postgres.procedures.base_procedure import BaseProcedure
 
 
 class SetDBRewindDate(BaseProcedure):
-    def __init__(self):
-        super().__init__()
+    def execute_as_user(self) -> Optional[str]:
+        return from_env('DB_REWINDER_HOST_POSTGRES_USER')
 
-    @OsNewProcessHandler.in_new_process(as_user=from_env('DB_REWINDER_HOST_POSTGRES_USER'))
     def _execute(self):
         print('Please enter date time to rewind to in format YYYY-mm-dd HH:MM:SS :')
 
