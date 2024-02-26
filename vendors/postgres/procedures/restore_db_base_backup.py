@@ -11,33 +11,30 @@ class RestoreDBBaseBackup(BaseProcedure):
         return from_env('DB_REWINDER_HOST_POSTGRES_USER')
 
     def _execute(self) -> OsResponseDTO:
-        # if not success, return and skip executing next procedures.
-        res = RestoreDBBaseBackup.restore_backup()
-        if not res.is_success():
-            return res
+        return self._RestoreBackup().next(
+            self._CreateMissingWalDirectory()
+        ).execute()
 
-        return RestoreDBBaseBackup.create_missing_wal_directory()
+    class _RestoreBackup(BaseProcedure):
+        def _execute(self) -> OsResponseDTO:
+            base_backup_dir = from_env("DB_REWINDER_POSTGRES_BASE_BACKUP_DIR")
+            main_db_dir = from_env("DB_REWINDER_POSTGRES_DATA_DIR")
 
-    @staticmethod
-    def restore_backup() -> OsResponseDTO:
-        base_backup_dir = from_env("DB_REWINDER_POSTGRES_BASE_BACKUP_DIR")
-        main_db_dir = from_env("DB_REWINDER_POSTGRES_DATA_DIR")
+            # "tar xvfz /var/lib/postgresql/base_backup_12/base.tar -C ./"
 
-        # "tar xvfz /var/lib/postgresql/base_backup_12/base.tar -C ./"
+            # TODO: solve hard coded file name.
+            backup_file_name = 'db_rewinder.tar.gz'
 
-        # TODO: solve hard coded file name.
-        backup_file_name = 'db_rewinder.tar.gz'
+            command = f"tar xfz {base_backup_dir}/{backup_file_name} -C {main_db_dir}"
 
-        command = f"tar xfz {base_backup_dir}/{backup_file_name} -C {main_db_dir}"
+            return OsCommandHandler.execute(command)
 
-        return OsCommandHandler.execute(command)
+    class _CreateMissingWalDirectory(BaseProcedure):
+        def _execute(self) -> OsResponseDTO:
+            main_db_dir = from_env("DB_REWINDER_POSTGRES_DATA_DIR")
 
-    @staticmethod
-    def create_missing_wal_directory() -> OsResponseDTO:
-        main_db_dir = from_env("DB_REWINDER_POSTGRES_DATA_DIR")
+            command = f"mkdir {main_db_dir}/pg_wal"
+            print("Creating missing pg_wal directory")
+            print(f"using command: {command}")
 
-        command = f"mkdir {main_db_dir}/pg_wal"
-        print("Creating missing pg_wal directory")
-        print(f"using command: {command}")
-
-        return OsCommandHandler.execute(command)
+            return OsCommandHandler.execute(command)
