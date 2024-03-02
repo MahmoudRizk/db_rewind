@@ -8,9 +8,11 @@ from vendors.postgres.procedures.base_procedure import BaseProcedure
 
 
 class ArchiveWalFiles(BaseProcedure):
-
     def execute_as_user(self) -> Optional[str]:
         return from_env('DB_REWINDER_HOST_POSTGRES_USER')
+
+    def can_user_handle_error_manually(self) -> bool:
+        return True
 
     def _execute(self) -> OsResponseDTO:
         command = 'psql -c "select pg_switch_wal();"'

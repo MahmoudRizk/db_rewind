@@ -11,7 +11,7 @@ class SetDBRewindDate(BaseProcedure):
         return from_env('DB_REWINDER_HOST_POSTGRES_USER')
 
     def _execute(self):
-        self.print_info('Please enter date time to rewind to in format YYYY-mm-dd HH:MM:SS :')
+        self.print_message('Please enter date time to rewind to in format YYYY-mm-dd HH:MM:SS :')
 
         db_rewind_date = self.prompt_session.prompt('enter date:')
 
