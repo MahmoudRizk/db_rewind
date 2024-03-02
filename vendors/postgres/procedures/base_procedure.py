@@ -43,7 +43,7 @@ class BaseProcedure(metaclass=abc.ABCMeta):
         return self
 
     def can_user_handle_error_manually(self) -> bool:
-        return False
+        return True
 
     def _switch_user(self, user_name: Optional[str]) -> None:
         if not user_name:
