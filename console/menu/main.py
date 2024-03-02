@@ -21,11 +21,6 @@ class Main(Menu):
     def _get_commands(self) -> List[Command]:
         return [
             Command(
-                name='help',
-                description='Print available commands.',
-                callback=lambda _: None
-            ),
-            Command(
                 name='setup',
                 description='Enter setup menu.',
                 callback=self.setup

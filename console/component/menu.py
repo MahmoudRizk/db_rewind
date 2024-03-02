@@ -39,22 +39,30 @@ class Menu(metaclass=abc.ABCMeta):
         return txt.replace('-', '_')
 
     def print_commands_for_help(self) -> None:
-        print('command', 'description')
+        print('\nAvailable Commands\n')
         for command in self.commands:
-            print(command.get_name(), command.get_description())
+            print(f'\t{command.get_name()} - {command.get_description()}')
+
+        print('\n')
 
     def get_commands(self) -> List[Command]:
         commands = self._get_commands()
 
-        # Add exit commands if was not defined in the list of commands.
-        if not Menu.get_command('exit', commands):
-            commands.append(
-                Command(
-                    'exit',
-                    'exit menu',
-                    callback=lambda **kwargs: None
-                )
+        commands.append(
+            Command(
+                'exit',
+                'exit menu',
+                callback=lambda **kwargs: None
             )
+        )
+        commands.append(
+            Command(
+                name='help',
+                description='list available commands',
+                callback=lambda **kwargs: self.print_commands_for_help()
+            )
+        )
+
         return commands
 
     @abstractmethod

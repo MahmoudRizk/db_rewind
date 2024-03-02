@@ -17,11 +17,6 @@ class Rewinder(Menu):
     def _get_commands(self) -> List[Command]:
         return [
             Command(
-                name='help',
-                description='print available commands',
-                callback=lambda _: None
-            ),
-            Command(
                 name='rewind',
                 description='Rewind Database',
                 callback=self.rewind

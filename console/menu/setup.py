@@ -18,11 +18,6 @@ class Setup(Menu):
     def _get_commands(self) -> List[Command]:
         return [
             Command(
-                name='help',
-                description='print commands list',
-                callback=lambda _: None
-            ),
-            Command(
                 name='install',
                 description='auto install database dependencies.',
                 callback=Setup.install
