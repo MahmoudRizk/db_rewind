@@ -21,8 +21,8 @@ class CreateDBBaseBackup(BaseProcedure):
         def _execute(self) -> OsResponseDTO:
             # Set database in backup mode first using.
             command = "psql -c \"SELECT pg_start_backup('label');\""
-            print('Running pg_start_backup.')
-            print(f"using command: {command}")
+            self.print_info('Running pg_start_backup.')
+            self.print_info(f"using command: {command}")
             return OsCommandHandler.execute(command)
 
     class _BackupDatabase(BaseProcedure):
@@ -34,14 +34,14 @@ class CreateDBBaseBackup(BaseProcedure):
 
             # Backing up database.
             command = f"tar -czf {base_backup_dir}/{backup_file_name} -C {main_db_dir} --exclude=pg_wal ."
-            print('creating db backup.')
-            print(f"using: {command}")
+            self.print_info('creating db backup.')
+            self.print_info(f"using: {command}")
             return OsCommandHandler.execute(command)
 
     class _StopDBBackupMode(BaseProcedure):
         def _execute(self) -> OsResponseDTO:
             # Stop database backup mode.
             command = 'psql -c "SELECT pg_stop_backup();"'
-            print('Running pg_stop_backup.')
-            print(f"using command: {command}")
+            self.print_info('Running pg_stop_backup.')
+            self.print_info(f"using command: {command}")
             return OsCommandHandler.execute(command)

@@ -15,7 +15,7 @@ class DestroyDBData(BaseProcedure):
 
         command = f"rm -r {main_db_dir}/*"
 
-        print("Destroying database files.")
-        print(f"using command: {command}")
+        self.print_info("Destroying database files.")
+        self.print_info(f"using command: {command}")
 
         return OsCommandHandler.execute(command)

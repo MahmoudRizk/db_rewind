@@ -14,7 +14,7 @@ class ArchiveWalFiles(BaseProcedure):
 
     def _execute(self) -> OsResponseDTO:
         command = 'psql -c "select pg_switch_wal();"'
-        print('archiving wal files, using pg_switch_wal()')
-        print(f'executing: {command}')
+        self.print_info('archiving wal files, using pg_switch_wal()')
+        self.print_info(f'executing: {command}')
 
         return OsCommandHandler.execute(command)

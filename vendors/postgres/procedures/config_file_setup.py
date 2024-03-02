@@ -11,10 +11,10 @@ class ConfigFileSetup(BaseProcedure):
         return from_env('DB_REWINDER_HOST_POSTGRES_USER')
 
     def _execute(self) -> OsResponseDTO:
-        print('Configuring postgres configuration file.')
-        print(f"Postgres Config File: {self.file_path}")
+        self.print_info('Configuring postgres configuration file.')
+        self.print_info(f"Postgres Config File: {self.file_path}")
 
-        print('Editing postgres config file.')
+        self.print_info('Editing postgres config file.')
         self.enable_and_set_wal_level_to_archive()
         self.enable_and_set_archive_mode_to_on()
         self.enable_and_set_archive_command()
@@ -36,17 +36,17 @@ class ConfigFileSetup(BaseProcedure):
         self.restore_command = restore_command
 
     def enable_and_set_wal_level_to_archive(self) -> None:
-        print('enable wal archive.')
+        self.print_info('enable wal archive.')
         self.config_file.set_directive_value(name='wal_level', value='archive')
 
     def enable_and_set_archive_mode_to_on(self) -> None:
-        print('set archive mode to on.')
+        self.print_info('set archive mode to on.')
         self.config_file.set_directive_value('archive_mode', 'on')
 
     def enable_and_set_archive_command(self) -> None:
-        print('set archive command.')
+        self.print_info('set archive command.')
         self.config_file.set_directive_value('archive_command', self.archive_command, True)
 
     def enable_and_set_restore_command(self) -> None:
-        print('set restore command.')
+        self.print_info('set restore command.')
         self.config_file.set_directive_value('restore_command', self.restore_command, True)

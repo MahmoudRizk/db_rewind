@@ -34,7 +34,7 @@ class RestoreDBBaseBackup(BaseProcedure):
             main_db_dir = from_env("DB_REWINDER_POSTGRES_DATA_DIR")
 
             command = f"mkdir {main_db_dir}/pg_wal"
-            print("Creating missing pg_wal directory")
-            print(f"using command: {command}")
+            self.print_info("Creating missing pg_wal directory")
+            self.print_info(f"using command: {command}")
 
             return OsCommandHandler.execute(command)

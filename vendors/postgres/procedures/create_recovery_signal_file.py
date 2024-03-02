@@ -15,7 +15,7 @@ class CreateRecoverySignalFile(BaseProcedure):
 
         command = f"touch {main_db_dir}/recovery.signal"
 
-        print('Creating recovery signal conf file')
-        print(f"Using command: {command}")
+        self.print_info('Creating recovery signal conf file')
+        self.print_info(f"Using command: {command}")
 
         return OsCommandHandler.execute(command)

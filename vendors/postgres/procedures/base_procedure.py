@@ -5,7 +5,7 @@ import sys
 from multiprocessing import Process, Pipe
 from typing import Optional
 
-from prompt_toolkit import PromptSession
+from prompt_toolkit import PromptSession, print_formatted_text, HTML
 
 from vendors.postgres.os_handler.os_response_dto import OsResponseDTO
 
@@ -24,7 +24,11 @@ class BaseProcedure(metaclass=abc.ABCMeta):
 
     def execute(self) -> OsResponseDTO:
         res = self._execute_in_new_process()
-        if not (res.is_success() and self.next_procedure):
+        if not res.is_success():
+            self.print_error(res.get_error_message())
+            return res
+
+        if not self.next_procedure:
             return res
 
         return self.next_procedure.execute()
@@ -37,7 +41,7 @@ class BaseProcedure(metaclass=abc.ABCMeta):
         if not user_name:
             return
 
-        print(f"Switching to user: {user_name}")
+        self.print_info(f"Switching to user: {user_name}")
         user = pwd.getpwnam(user_name)
 
         os.setgid(user.pw_uid)
@@ -68,3 +72,9 @@ class BaseProcedure(metaclass=abc.ABCMeta):
         p.join()
 
         return parent_conn.recv()
+
+    def print_info(self, message: str):
+        print_formatted_text(HTML(f"<ansigreen>INFO: {message}</ansigreen>"))
+
+    def print_error(self, message: str):
+        print_formatted_text(HTML(f"<ansired>ERROR: {message}</ansired>"))

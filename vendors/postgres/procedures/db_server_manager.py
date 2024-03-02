@@ -28,6 +28,6 @@ class DBServerManager(BaseProcedure):
 
     def _execute(self) -> OsResponseDTO:
         sys_command = f"systemctl {self.command} postgresql.service"
-        print(f"{self.command} postgres server using systemctl: {sys_command}")
+        self.print_info(f"{self.command} postgres server using systemctl: {sys_command}")
 
         return OsCommandHandler.execute(sys_command)
