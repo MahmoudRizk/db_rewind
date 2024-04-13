@@ -57,5 +57,5 @@ class FileHandler:
 
     def _write_file(self) -> None:
         with open(self.file_path, 'w') as file:
-            lines = [line.get() for line in self.lines]
+            lines = [f"{line.get()}\n" for line in self.lines]
             file.writelines(lines)
