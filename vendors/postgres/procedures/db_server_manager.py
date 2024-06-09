@@ -27,7 +27,7 @@ class DBServerManager(BaseProcedure):
         return from_env('DB_REWINDER_HOST_ROOT_USER')
 
     def _execute(self) -> OsResponseDTO:
-        sys_command = f"systemctl {self.command} postgresql.service"
+        sys_command = f"systemctl {self.command} postgresql@12-main.service"
         self.print_info(f"{self.command} postgres server using systemctl: {sys_command}")
 
         return OsCommandHandler.execute(sys_command)
