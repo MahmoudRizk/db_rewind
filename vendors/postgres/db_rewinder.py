@@ -4,6 +4,7 @@ from vendors.postgres.procedures.base_procedure import BaseProcedure
 from vendors.postgres.procedures.create_recovery_signal_file import CreateRecoverySignalFile
 from vendors.postgres.procedures.db_server_manager import DBServerManager
 from vendors.postgres.procedures.destroy_db_data import DestroyDBData
+from vendors.postgres.procedures.remove_recovery_signal_file import RemoveRecoverySignalFile
 from vendors.postgres.procedures.restore_db_base_backup import RestoreDBBaseBackup
 from vendors.postgres.procedures.set_db_rewind_date import SetDBRewindDate
 
@@ -21,7 +22,11 @@ class DBRewinder:
                     RestoreDBBaseBackup().next(
                         CreateRecoverySignalFile().next(
                             SetDBRewindDate().next(
-                                DBServerManager.start()
+                                DBServerManager.start().next(
+                                    RemoveRecoverySignalFile().next(
+                                        DBServerManager.restart()
+                                    )
+                                )
                             )
                         )
                     )
