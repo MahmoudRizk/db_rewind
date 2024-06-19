@@ -3,12 +3,15 @@ import unittest
 from pathlib import Path
 
 from db_rewind.postgres.config_file_handler.file_handler import FileHandler
+from db_rewind.postgres.config_file_handler.file_io import FileIO
 
 THIS_DIR = Path(__file__).parent
 
 class TestFileHandler(unittest.TestCase):
     def test_adding_setup_to_postgres_conf_file(self):
-        file_handler = FileHandler(THIS_DIR / 'fixtures/postgres.conf')
+        file_path = THIS_DIR / 'fixtures/postgres.conf'
+        file_io = FileIO(file_path)
+        file_handler = FileHandler(file_io=file_io)
 
         file_handler.set_directive_value('archive_mode', 'on')
         file_handler.set_directive_value('archive_command', "test ! -f /var/lib/postgresql/wal_backup_12/%f && cp %p /var/lib/postgresql/wal_backup_12/%f", True)

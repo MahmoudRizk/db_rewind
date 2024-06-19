@@ -2,6 +2,7 @@ from typing import Optional
 
 from db_rewind.postgres import from_env
 from db_rewind.postgres.config_file_handler.file_handler import FileHandler
+from db_rewind.postgres.config_file_handler.file_io import FileIO
 from db_rewind.postgres.os_handler.os_response_dto import OsResponseDTO
 from db_rewind.postgres.procedures.base_procedure import BaseProcedure
 
@@ -31,7 +32,10 @@ class ConfigFileSetup(BaseProcedure):
         super().__init__()
 
         self.file_path = file_path
-        self.config_file = FileHandler(file_path=self.file_path)
+
+        file_io = FileIO(file_path)
+        self.config_file = FileHandler(file_io=file_io)
+
         self.archive_command = archive_command
         self.restore_command = restore_command
 

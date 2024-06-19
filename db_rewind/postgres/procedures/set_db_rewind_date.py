@@ -2,6 +2,7 @@ from typing import Optional
 
 from db_rewind.postgres import from_env
 from db_rewind.postgres.config_file_handler.file_handler import FileHandler
+from db_rewind.postgres.config_file_handler.file_io import FileIO
 from db_rewind.postgres.os_handler.os_response_dto import OsResponseDTO
 from db_rewind.postgres.procedures.base_procedure import BaseProcedure
 
@@ -19,8 +20,8 @@ class SetDBRewindDate(BaseProcedure):
         self.print_info(f"db_rewind_date: {db_rewind_date}")
 
         file_path = from_env('DB_REWINDER_POSTGRES_CONFIG_FILE_PATH')
-
-        config_file = FileHandler(file_path=file_path)
+        file_io = FileIO(file_path)
+        config_file = FileHandler(file_io=file_io)
 
         config_file.set_directive_value('recovery_target_time', db_rewind_date, True)
         config_file.save()

@@ -4,13 +4,14 @@ from .commands.disable_directive_command import DisableDirectiveCommand
 from .commands.enable_directive_command import EnableDirectiveCommand
 from .commands.set_directive_value_command import SetDirectiveValueCommand
 from .config_line import ConfigLine
+from .file_io import FileIO
 
 
 class FileHandler:
-    def __init__(self, file_path: str):
-        self.file_path = file_path
+    def __init__(self, file_io: FileIO):
+        self.file_io = file_io
 
-        self.lines = self._read_file()
+        self.lines = self.file_io.read_file()
         self.commands = []
 
     def enable_directive(self, name: str) -> "FileHandler":
@@ -45,25 +46,10 @@ class FileHandler:
                 self.lines[-1] and self.lines[-1].add_line_break()
                 self.lines.append(line)
 
-        return self._write_file(in_memory)
+        return self.file_io.write_file(self.lines, in_memory)
 
     def _get_line_with_directive_name(self, name: str) -> Optional[ConfigLine]:
         for line in self.lines:
             if line.has_directive(name=name):
                 return line
         return None
-
-    def _read_file(self) -> List[ConfigLine]:
-        with open(self.file_path, 'r') as file:
-            lines = file.readlines()
-            return [ConfigLine(line) for line in lines]
-
-    def _write_file(self, in_memory: bool = False) -> list:
-        lines = [f"{line.get()}" for line in self.lines]
-        
-        if not in_memory:
-            with open(self.file_path, 'w') as file:
-                file.writelines(lines)
-            
-
-        return lines
