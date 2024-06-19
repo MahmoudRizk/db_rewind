@@ -17,16 +17,7 @@ class FileHandler:
 
     def save(self, in_memory: bool = False) -> List[str]:
         for command in self.commands:
-            directive_name = command.get_directive_name()
-
-            line = self._get_line_with_directive_name(directive_name)
-
-            is_new = True if not line else False
-            line = command.execute(line=line)
-
-            if is_new and line.get() != '':
-                self.lines[-1] and self.lines[-1].add_line_break()
-                self.lines.append(line)
+            command.execute(file_lines=self.lines)
 
         return self.file_io.write_file(self.lines, in_memory)
 
