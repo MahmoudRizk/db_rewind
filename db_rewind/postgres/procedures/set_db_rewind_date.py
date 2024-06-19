@@ -1,6 +1,7 @@
 from typing import Optional
 
 from db_rewind.postgres import from_env
+from db_rewind.postgres.config_file_handler.commands.set_directive_value_command import SetDirectiveValueCommand
 from db_rewind.postgres.config_file_handler.file_handler import FileHandler
 from db_rewind.postgres.config_file_handler.file_io import FileIO
 from db_rewind.postgres.os_handler.os_response_dto import OsResponseDTO
@@ -23,7 +24,8 @@ class SetDBRewindDate(BaseProcedure):
         file_io = FileIO(file_path)
         config_file = FileHandler(file_io=file_io)
 
-        config_file.set_directive_value('recovery_target_time', db_rewind_date, True)
+        config_file.apply_command(
+            SetDirectiveValueCommand('recovery_target_time', db_rewind_date, use_single_quotation=True))
         config_file.save()
 
         return OsResponseDTO(exit_code=0)

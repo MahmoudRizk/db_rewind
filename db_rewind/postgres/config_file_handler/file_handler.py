@@ -1,8 +1,6 @@
 from typing import Optional, List
 
-from .commands.disable_directive_command import DisableDirectiveCommand
-from .commands.enable_directive_command import EnableDirectiveCommand
-from .commands.set_directive_value_command import SetDirectiveValueCommand
+from .commands.abstract_command import AbstractCommand
 from .config_line import ConfigLine
 from .file_io import FileIO
 
@@ -14,24 +12,8 @@ class FileHandler:
         self.lines = self.file_io.read_file()
         self.commands = []
 
-    def enable_directive(self, name: str) -> "FileHandler":
-        self.commands.append(
-            EnableDirectiveCommand(directive_name=name)
-        )
-        return self
-
-    def disable_directive(self, name: str) -> "FileHandler":
-        self.commands.append(
-            DisableDirectiveCommand(directive_name=name)
-        )
-        return self
-
-    def set_directive_value(self, name: str, value: any, use_single_quotation=False) -> "FileHandler":
-        self.commands.append(
-            SetDirectiveValueCommand(directive_name=name, directive_value=value,
-                                     use_single_quotation=use_single_quotation)
-        )
-        return self
+    def apply_command(self, command: AbstractCommand) -> None:
+        self.commands.append(command)
 
     def save(self, in_memory: bool = False) -> List[str]:
         for command in self.commands:
