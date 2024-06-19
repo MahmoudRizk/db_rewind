@@ -45,7 +45,7 @@ class TestConfigLine(unittest.TestCase):
     
     @parameterized.expand([
         ["#hba_file = 'ConfigDir/pg_hba.conf' # host-based authentication file", '/home/hba.conf', True, "hba_file = '/home/hba.conf' # host-based authentication file"],
-        ["#hba_file = 'ConfigDir/pg_hba.conf'    # host-based authentication file", '/home/hba.conf', True, "hba_file = '/home/hba.conf' # host-based authentication file"],
+        ["#hba_file = 'ConfigDir/pg_hba.conf'    # host-based authentication file    ", '/home/hba.conf', True, "hba_file = '/home/hba.conf'    # host-based authentication file    "],
         ["#hba_file = 'ConfigDir/pg_hba.conf'", '/home/hba.conf', True, "hba_file = '/home/hba.conf'"],
         ["#load_timeout = '0'", '123', False, "load_timeout = 123"],
         ["#load_timeout = 99", '456', False, "load_timeout = 456"],

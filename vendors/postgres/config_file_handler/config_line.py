@@ -37,13 +37,25 @@ class ConfigLine:
         if index == -1:
             return ''
         
-        return self.line[index:].strip()
+        index = self._get_comment_index_prefixed_with_white_space(index)
+
+        return self.line[index:]
 
     def _append_comment_if_any(self, line: str, comment: str) -> str:
         if comment:
-            line = line + ' ' + comment
+            line += comment
         return line
     
     def _parse_set_directive_value(self, value: any, use_single_quotation: bool) -> str:
         return f"'{value}'" if use_single_quotation else f"{value}"
+
+    def _get_comment_index_prefixed_with_white_space(self, index: int):
+        prev_index = index - 1
+
+        if prev_index >= 0 and self.line[prev_index] in {' ', '\t'}:
+            return self._get_comment_index_prefixed_with_white_space(prev_index)
+        
+        return index
+        
+
 
