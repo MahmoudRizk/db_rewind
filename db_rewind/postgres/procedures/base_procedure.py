@@ -7,8 +7,7 @@ from typing import Optional
 
 from prompt_toolkit import PromptSession, print_formatted_text, HTML
 
-from vendors.postgres.os_handler.os_response_dto import OsResponseDTO
-
+from db_rewind.postgres.os_handler.os_response_dto import OsResponseDTO
 
 class BaseProcedure(metaclass=abc.ABCMeta):
 

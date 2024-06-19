@@ -2,9 +2,9 @@ from typing import List
 
 from prompt_toolkit import PromptSession
 
-from console.component.command import Command
-from console.component.menu import Menu
-from vendors.postgres.db_rewinder import DBRewinder
+from db_rewind.console.component.command import Command
+from db_rewind.console.component.menu import Menu
+from db_rewind.postgres.db_rewinder import DBRewinder
 
 
 class Rewinder(Menu):

@@ -2,10 +2,10 @@ from typing import List
 
 from prompt_toolkit import PromptSession
 
-from console.component.command import Command
-from console.component.menu import Menu
-from console.menu.setup import Setup as ConsoleSetup
-from console.menu.rewinder import Rewinder as DBRewinder
+from db_rewind.console.component.command import Command
+from db_rewind.console.component.menu import Menu
+from db_rewind.console.menu.setup import Setup as ConsoleSetup
+from db_rewind.console.menu.rewinder import Rewinder as DBRewinder
 
 
 class Main(Menu):

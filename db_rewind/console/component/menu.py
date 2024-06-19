@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from prompt_toolkit import PromptSession
 
-from console.component.command import Command
+from db_rewind.console.component.command import Command
 
 
 class Menu(metaclass=abc.ABCMeta):

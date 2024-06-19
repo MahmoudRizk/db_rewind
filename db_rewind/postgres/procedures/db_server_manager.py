@@ -1,9 +1,9 @@
 from typing import Optional
 
-from vendors.postgres import from_env
-from vendors.postgres.os_handler.os_command_handler import OsCommandHandler
-from vendors.postgres.os_handler.os_response_dto import OsResponseDTO
-from vendors.postgres.procedures.base_procedure import BaseProcedure
+from db_rewind.postgres import from_env
+from db_rewind.postgres.os_handler.os_command_handler import OsCommandHandler
+from db_rewind.postgres.os_handler.os_response_dto import OsResponseDTO
+from db_rewind.postgres.procedures.base_procedure import BaseProcedure
 
 
 class DBServerManager(BaseProcedure):

@@ -1,7 +1,7 @@
 import unittest
 from parameterized import parameterized
 
-from vendors.postgres.config_file_handler.config_line import ConfigLine
+from db_rewind.postgres.config_file_handler.config_line import ConfigLine
 
 
 class TestConfigLine(unittest.TestCase):

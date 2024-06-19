@@ -2,7 +2,7 @@ import unittest
 
 from pathlib import Path
 
-from vendors.postgres.config_file_handler.file_handler import FileHandler
+from db_rewind.postgres.config_file_handler.file_handler import FileHandler
 
 THIS_DIR = Path(__file__).parent
 

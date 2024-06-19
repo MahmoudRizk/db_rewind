@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 
-from console.menu.main import Main as ConsoleMain
+from db_rewind.console.menu.main import Main as ConsoleMain
 
 from prompt_toolkit import PromptSession
 
