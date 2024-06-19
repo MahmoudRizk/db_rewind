@@ -40,6 +40,7 @@ class FileHandler:
             line = command.execute(line=line)
 
             if is_new:
+                self.lines[-1] and self.lines[-1].add_line_break()
                 self.lines.append(line)
 
         return self._write_file(in_memory)

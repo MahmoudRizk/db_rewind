@@ -26,6 +26,10 @@ class TestFileHandler(unittest.TestCase):
         # Disable already disabled directive
         file_handler.disable_directive('include_dir')
 
+        # Add new command to the end of the file
+        file_handler.set_directive_value('new_test_command', 'Yes', use_single_quotation=True)
+        file_handler.set_directive_value('new_test_command_2', 'No', use_single_quotation=False)
+
         in_memory_file = file_handler.save(in_memory=True)
 
         with open(THIS_DIR / 'fixtures/expected_postgres.conf') as expected:

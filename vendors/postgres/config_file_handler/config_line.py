@@ -25,6 +25,9 @@ class ConfigLine:
             _line = f"{directive_name} = " + self._parse_set_directive_value(value, use_single_quotation)
             self.line = self._append_comment_if_any(_line, self._get_line_comment())
         return self
+    
+    def add_line_break(self) -> None:
+        self.line = f"{self.line}\n" 
 
     def has_directive(self, name: str) -> bool:
         return self.get_directive_name() == name
