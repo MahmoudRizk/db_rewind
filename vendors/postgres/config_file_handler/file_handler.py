@@ -39,7 +39,7 @@ class FileHandler:
             is_new = True if not line else False
             line = command.execute(line=line)
 
-            if is_new:
+            if is_new and line.get() != '':
                 self.lines[-1] and self.lines[-1].add_line_break()
                 self.lines.append(line)
 
