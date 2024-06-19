@@ -30,7 +30,7 @@ class FileHandler:
         )
         return self
 
-    def save(self) -> None:
+    def save(self, in_memory: bool = False) -> List[str]:
         for command in self.commands:
             directive_name = command.get_directive_name()
 
@@ -42,7 +42,7 @@ class FileHandler:
             if is_new:
                 self.lines.append(line)
 
-        self._write_file()
+        return self._write_file(in_memory)
 
     def _get_line_with_directive_name(self, name: str) -> Optional[ConfigLine]:
         for line in self.lines:
@@ -55,7 +55,12 @@ class FileHandler:
             lines = file.readlines()
             return [ConfigLine(line) for line in lines]
 
-    def _write_file(self) -> None:
-        with open(self.file_path, 'w') as file:
-            lines = [f"{line.get()}\n" for line in self.lines]
-            file.writelines(lines)
+    def _write_file(self, in_memory: bool = False) -> list:
+        lines = [f"{line.get()}" for line in self.lines]
+        
+        if not in_memory:
+            with open(self.file_path, 'w') as file:
+                file.writelines(lines)
+            
+
+        return lines
