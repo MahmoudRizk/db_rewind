@@ -20,6 +20,9 @@ class TestFileHandler(unittest.TestCase):
         # Disable enabled directive
         file_handler.disable_directive('exit_on_error')
 
+        # Enable already enabled directive
+        file_handler.enable_directive('archive_mode')
+
         # Disable already disabled directive
         file_handler.disable_directive('include_dir')
 
