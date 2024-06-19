@@ -1,7 +1,9 @@
 from typing import Optional, List
 
+from .commands.disable_directive_command import DisableDirectiveCommand
+from .commands.enable_directive_command import EnableDirectiveCommand
+from .commands.set_directive_value_command import SetDirectiveValueCommand
 from .config_line import ConfigLine
-from .file_handler_commands import EnableDirectiveCommand, DisableDirectiveCommand, SetDirectiveValueCommand
 
 
 class FileHandler:
