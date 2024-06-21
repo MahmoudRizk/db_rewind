@@ -15,7 +15,10 @@ class SetDBRewindDate(BaseProcedure):
     def _execute(self):
         self.print_message('Please enter date time to rewind to in format YYYY-mm-dd HH:MM:SS :')
 
-        db_rewind_date = self.prompt_session.prompt('enter date:')
+        if self.is_input_prompt_allowed():
+            db_rewind_date = self.prompt_session.prompt('enter date:')
+        else:
+            db_rewind_date = self._get_db_rewind_date()
 
         self.print_info('Setting db rewind date in config file.')
         self.print_info(f"db_rewind_date: {db_rewind_date}")
@@ -29,3 +32,12 @@ class SetDBRewindDate(BaseProcedure):
         config_file.save()
 
         return OsResponseDTO(exit_code=0)
+
+    def _get_db_rewind_date(self):
+        # Try to get input from env variables
+        db_rewind_date = from_env('DB_REWINDER_REWIND_DATE')
+
+        if not db_rewind_date:
+            raise Exception("No db rewind date was specified.")
+
+        return db_rewind_date

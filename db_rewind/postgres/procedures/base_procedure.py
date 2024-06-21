@@ -7,13 +7,20 @@ from typing import Optional
 
 from prompt_toolkit import PromptSession, print_formatted_text, HTML
 
+from db_rewind.postgres import from_env
 from db_rewind.postgres.os_handler.os_response_dto import OsResponseDTO
+
 
 class BaseProcedure(metaclass=abc.ABCMeta):
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.prompt_session = PromptSession()
         self.next_procedure: Optional[BaseProcedure] = None
+
+        self._allow_user_handle_error_manually = bool(int(from_env('DB_REWINDER_ALLOW_USER_HANDLE_ERROR_MANUALLY')))
+        self._input_prompt_allowed = bool(int(from_env('DB_REWINDER_ALLOW_INPUT_PROMPTS')))
+
+        self._input_arguments = kwargs
 
     @abc.abstractmethod
     def _execute(self) -> OsResponseDTO:
@@ -41,8 +48,26 @@ class BaseProcedure(metaclass=abc.ABCMeta):
         self.next_procedure = next
         return self
 
+    def get_next_procedure(self) -> Optional["BaseProcedure"]:
+        return self.next_procedure
+
     def can_user_handle_error_manually(self) -> bool:
-        return True
+        return self._allow_user_handle_error_manually
+
+    def allow_user_handle_error_manually(self) -> None:
+        self._allow_user_handle_error_manually = True
+
+    def prevent_user_handle_error_manually(self) -> None:
+        self._allow_user_handle_error_manually = False
+
+    def prevent_input_prompt(self) -> None:
+        self._input_prompt_allowed = False
+
+    def allow_input_prompt(self) -> None:
+        self._input_prompt_allowed = True
+
+    def is_input_prompt_allowed(self) -> bool:
+        return self._input_prompt_allowed
 
     def _switch_user(self, user_name: Optional[str]) -> None:
         if not user_name:
