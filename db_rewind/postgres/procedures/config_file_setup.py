@@ -46,7 +46,7 @@ class ConfigFileSetup(BaseProcedure):
 
     def enable_and_set_archive_mode_to_on(self) -> None:
         self.print_info('set archive mode to on.')
-        self.config_file.apply_command(SetDirectiveValueCommand('archive_command', 'on'))
+        self.config_file.apply_command(SetDirectiveValueCommand('archive_mode', 'on'))
 
     def enable_and_set_archive_command(self) -> None:
         self.print_info('set archive command.')
