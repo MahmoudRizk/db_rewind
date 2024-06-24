@@ -29,7 +29,8 @@ class ConfigFileSetup(BaseProcedure):
     def __init__(self,
                  file_path: str = from_env('DB_REWINDER_POSTGRES_CONFIG_FILE_PATH'),
                  archive_command: str = from_env('DB_REWINDER_POSTGRES_ARCHIVE_COMMAND'),
-                 restore_command: str = from_env('DB_REWINDER_POSTGRES_RESTORE_COMMAND')):
+                 restore_command: str = from_env('DB_REWINDER_POSTGRES_RESTORE_COMMAND'),
+                 wal_archive_dir: str = from_env('DB_REWINDER_POSTGRES_WAL_BACKUP_DIR')):
         super().__init__()
 
         self.file_path = file_path
@@ -37,8 +38,8 @@ class ConfigFileSetup(BaseProcedure):
         file_io = FileIO(file_path)
         self.config_file = FileHandler(file_io=file_io)
 
-        self.archive_command = archive_command
-        self.restore_command = restore_command
+        self.archive_command = archive_command.format(DB_REWINDER_POSTGRES_WAL_BACKUP_DIR=wal_archive_dir)
+        self.restore_command = restore_command.format(DB_REWINDER_POSTGRES_WAL_BACKUP_DIR=wal_archive_dir)
 
     def enable_and_set_wal_level_to_archive(self) -> None:
         self.print_info('enable wal archive.')

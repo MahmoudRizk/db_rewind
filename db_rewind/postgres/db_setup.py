@@ -1,3 +1,4 @@
+from db_rewind.postgres import from_env
 from db_rewind.postgres.os_handler.os_response_dto import OsResponseDTO
 from db_rewind.postgres.procedures.archive_wal_files import ArchiveWalFiles
 from db_rewind.postgres.procedures.base_procedure import BaseProcedure
@@ -15,10 +16,12 @@ class DBSetup:
     @staticmethod
     def get_procedures() -> BaseProcedure:
         return ConfigFileSetup().next(
-            CreateMissingDirectories().next(
-                DBServerManager.restart().next(
-                    ArchiveWalFiles().next(
-                        CreateDBBaseBackup()
+            CreateMissingDirectories(dir_path=from_env('DB_REWINDER_POSTGRES_BASE_BACKUP_DIR')).next(
+                CreateMissingDirectories(dir_path=from_env('DB_REWINDER_POSTGRES_WAL_BACKUP_DIR')).next(
+                    DBServerManager.restart().next(
+                        ArchiveWalFiles().next(
+                            CreateDBBaseBackup()
+                        )
                     )
                 )
             )
