@@ -1,0 +1,41 @@
+# .github/workflows/docker-compose.yml
+name: build app test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Build Docker image
+      run: docker-compose -f './build_tests/docker-compose.yml' build
+
+    - name: Start Docker Compose services
+      run: docker-compose -f './build_tests/docker-compose.yml' up -d
+
+    - name: Shutdown Docker Compose
+      run: docker-compose -f './build_tests/docker-compose.yml' down
