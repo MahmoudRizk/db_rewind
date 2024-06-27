@@ -31,4 +31,4 @@ RUN apt-get update && \
 
 
 # Define the entrypoint script to run
-ENTRYPOINT ["/opt/entrypoint.sh"]
+ENTRYPOINT ["/opt/db_rewind/build_tests/src/entrypoint.sh"]

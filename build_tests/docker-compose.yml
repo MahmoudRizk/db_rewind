@@ -5,4 +5,4 @@ services:
       context: './'
       dockerfile: 'dockerfile'
     volumes:
-      - ./src:/opt
+      - ../:/opt/db_rewind
