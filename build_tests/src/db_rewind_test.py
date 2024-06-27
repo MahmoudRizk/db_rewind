@@ -27,6 +27,7 @@ def format_date_time(date_time: datetime.datetime) -> str:
 if __name__ == '__main__':
     def _execute(callback: Callable) -> None:
         res: Response = callback()
+        print(res)
         if res.returncode != 0:
             print('An error has occurred during db rewind testing.')
             print(res.stderr)
