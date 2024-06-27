@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Clone db_rewind repo
 git clone https://github.com/MahmoudRizk/db_rewind /opt/db_rewind
 

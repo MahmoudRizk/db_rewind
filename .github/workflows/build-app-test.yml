@@ -32,5 +32,17 @@ jobs:
     - name: Build Docker image
       run: docker-compose -f './build_tests/docker-compose.yml' build
 
-    - name: Start Docker Compose services
-      run: docker-compose -f './build_tests/docker-compose.yml' up
+    - name: Run E2E test
+      run: |
+        chmod +x './build_tests/github-workflow-runner.sh';
+
+        res=$(bash ./build_tests/github-workflow-runner.sh);
+
+        exit_code=$?;
+
+        if [ $exit_code -eq 0 ]; then
+            exit 0
+        else
+            echo $res;
+            exit 1;
+        fi
