@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 
 from dotenv import load_dotenv
 
@@ -78,4 +79,9 @@ def handle_interactive(args):
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print("Something went wrong!!")
+        print(e)
+        sys.exit(1)
