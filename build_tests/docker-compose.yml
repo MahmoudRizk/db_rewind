@@ -3,6 +3,8 @@ services:
   db-rewind-container:
     build:
       context: './'
+      args: 
+        - DB_REWINDER_POSTGRES_VERSION=$DB_REWINDER_POSTGRES_VERSION
       dockerfile: 'dockerfile'
     volumes:
       - ../:/opt/db_rewind
