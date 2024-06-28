@@ -55,7 +55,10 @@ def handle_rewind(args):
     else:
         print("Rewinding database to the default date from .env file")
 
-    DBRewinder.execute()
+    res = DBRewinder.execute()
+    if not res.is_success():
+        sys.exit(res.get_exit_code())
+
 
 
 def handle_setup(args):
@@ -65,7 +68,9 @@ def handle_setup(args):
         os.environ['DB_REWINDER_ALLOW_INPUT_PROMPTS'] = '0'
 
     print("Setting up the database...")
-    DBSetup.execute()
+    res = DBSetup.execute()
+    if not res.is_success():
+        sys.exit(res.get_exit_code())
 
 
 def handle_interactive(args):
