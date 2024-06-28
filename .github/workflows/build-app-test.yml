@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        postgres-version: [12, 14]
+        postgres-version: [12, 13]
 
     steps:
     - name: Checkout repository
