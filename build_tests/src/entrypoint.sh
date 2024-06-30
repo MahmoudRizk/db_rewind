@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+# set -e
 
 # Install pip requirements
 pip install -r /opt/db_rewind/requirements.txt
@@ -14,8 +14,13 @@ sed -i "s/{DB_REWINDER_POSTGRES_VERSION}/$DB_REWINDER_POSTGRES_VERSION/" /opt/db
 # Start the PostgreSQL service
 service postgresql start
 
-# Create database & test data
+# Create database
 su - postgres -c "psql -f /opt/db_rewind/build_tests/src/setup_database.sql"
+
+# Insert test data
+su - postgres -c "psql -f /opt/db_rewind/build_tests/src/insert_test_record.sql"
 
 # Setup Database configuration for database rewinding
 python3 /opt/db_rewind/build_tests/src/db_rewind_test.py
+
+tail -f /opt/db_rewind/build_tests/src/db_rewind_test.py

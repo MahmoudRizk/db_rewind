@@ -9,5 +9,3 @@ CREATE TABLE posts(
     name VARCHAR(255),
     description TEXT
 );
-
-INSERT INTO posts (name, description) VALUES ('post 1', 'description 1');
