@@ -22,5 +22,3 @@ su - postgres -c "psql -f /opt/db_rewind/build_tests/src/insert_test_record.sql"
 
 # Setup Database configuration for database rewinding
 python3 /opt/db_rewind/build_tests/src/db_rewind_test.py
-
-tail -f /opt/db_rewind/build_tests/src/db_rewind_test.py
