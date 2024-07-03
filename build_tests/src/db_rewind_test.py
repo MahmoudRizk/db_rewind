@@ -18,6 +18,13 @@ def insert_test_record() -> str:
     print('Running insert test record')
     return f"su - postgres -c 'psql -f /opt/db_rewind/build_tests/src/insert_test_record.sql'"
 
+def assert_successful_rewinding_by_records_count(records_count: int) -> str:
+    print(f"Asserting successful rewinding by records count eq: {records_count}")
+
+    psql_query = "psql -d test -c 'select count(*) from posts;'"
+    
+    return f"""su - postgres -c "{psql_query}" | head -n 3 | tail -n 1 | grep -E '^[[:space:]]*{records_count}$'"""
+
 def execute_command(command: str) -> Response:
     try:
         res = subprocess.run(command, shell=True, check=True, text=True, capture_output=True)
@@ -45,5 +52,7 @@ if __name__ == '__main__':
 
     
     _execute(lambda: execute_command(rewind_db(format_date_time(initial_date_time))))
+
+    _execute(lambda: execute_command(assert_successful_rewinding_by_records_count(1)))
 
     sys.exit(0)

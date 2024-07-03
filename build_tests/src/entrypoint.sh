@@ -17,8 +17,5 @@ service postgresql start
 # Create database
 su - postgres -c "psql -f /opt/db_rewind/build_tests/src/setup_database.sql"
 
-# Insert test data
-su - postgres -c "psql -f /opt/db_rewind/build_tests/src/insert_test_record.sql"
-
 # Setup Database configuration for database rewinding
 python3 /opt/db_rewind/build_tests/src/db_rewind_test.py
