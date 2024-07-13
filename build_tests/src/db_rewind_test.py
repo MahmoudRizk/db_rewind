@@ -1,6 +1,7 @@
 import datetime
 import subprocess
 import sys
+import time
 from typing import Callable
 from collections import namedtuple
 
@@ -11,7 +12,7 @@ def set_db_rewinding_configurations() -> str:
     return 'python3 /opt/db_rewind/main.py setup --disable-user-interaction'
 
 def rewind_db(date_time: str) -> str:
-    print('Running rewind_db script')
+    print(f'Running rewind_db script at date {date_time}')
     return f"python3 /opt/db_rewind/main.py rewind --disable-user-interaction --db-rewind-date '{date_time}'"
 
 def insert_test_record() -> str:
@@ -47,10 +48,13 @@ if __name__ == '__main__':
     _execute(lambda: execute_command(set_db_rewinding_configurations()))
     
     _execute(lambda: execute_command(insert_test_record()))
+    
+    # Sleep for one second to get initial time stamp after 1 second of first record insertion.
+    time.sleep(1)
     initial_date_time = datetime.datetime.now(datetime.timezone.utc)
+    
     _execute(lambda: execute_command(insert_test_record()))
 
-    
     _execute(lambda: execute_command(rewind_db(format_date_time(initial_date_time))))
 
     _execute(lambda: execute_command(assert_successful_rewinding_by_records_count(1)))
